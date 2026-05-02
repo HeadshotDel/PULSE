@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FieldAid icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#145f56"/>
+      <stop offset="100%" stop-color="#ef633d"/>
+    </linearGradient>
+    <linearGradient id="pin" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff9ea"/>
+      <stop offset="100%" stop-color="#f8e1be"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+  <path d="M255.9 80c-72.4 0-131 58.6-131 131 0 91.5 96.9 183.7 119.8 204.3a17.6 17.6 0 0 0 22.4 0C290 394.8 387 302.5 387 211c0-72.4-58.7-131-131.1-131Z" fill="url(#pin)"/>
+  <circle cx="256" cy="214" r="82" fill="#145f56"/>
+  <rect x="234" y="160" width="44" height="108" rx="12" fill="#fffdf7"/>
+  <rect x="202" y="192" width="108" height="44" rx="12" fill="#fffdf7"/>
+  <path d="M146 388c53 21 167 25 220 8 21-7 37 22 19 35-17 12-70 25-119 25-48 0-102-12-125-27-18-11-15-34 5-41Z" fill="rgba(255,255,255,0.15)"/>
+</svg>

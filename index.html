@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0d0f">
+  <meta name="description" content="FieldAid: offline first aid, local hazards, emergency help, translation, and safe travel tools.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <title>FieldAid</title>
+</head>
+<body>
+  <div class="mobile-app">
+    <header class="app-topbar">
+      <div>
+        <p class="app-kicker">FieldAid</p>
+        <h1 data-i18n="appTitle">Travel First Aid</h1>
+      </div>
+      <div class="topbar-badges">
+        <button class="top-badge" id="sync-badge" type="button">offline</button>
+        <button class="icon-chip" id="install-button" type="button" aria-label="Open profile">⚙</button>
+      </div>
+    </header>
+
+    <main class="tab-shell">
+      <section class="tab-panel is-active" data-tab-panel="sos">
+        <div class="screen-head">
+          <div>
+            <p class="screen-kicker" data-i18n="currentLocation">Current location</p>
+            <h2 id="sos-location-title">Phuket, Thailand</h2>
+            <p class="screen-subtitle" id="sos-location-subtitle">Offline safety profile</p>
+          </div>
+          <button class="icon-chip" id="locate-button" type="button" aria-label="Detect location">◎</button>
+        </div>
+
+        <section class="panel hero-panel" id="sos-location-card"></section>
+
+        <section class="content-section">
+          <div class="section-headline">
+            <h3 data-i18n="localEmergencyServices">Local Emergency Services</h3>
+          </div>
+          <div class="service-grid" id="sos-service-grid"></div>
+          <div id="sos-consular-card"></div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-headline">
+            <h3 data-i18n="nearbyHelpTitle">Nearest Help by GPS</h3>
+            <span id="gps-help-subtitle"></span>
+          </div>
+          <div class="mini-list" id="sos-help-points"></div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-headline">
+            <h3 data-i18n="countryRulesTitle">General Rules in This Country</h3>
+          </div>
+          <div class="rule-list" id="country-rules"></div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-headline">
+            <h3 data-i18n="weatherTitle">Weather and Possible Anomalies</h3>
+          </div>
+          <div id="weather-panel"></div>
+        </section>
+
+        <section class="content-section translator-panel">
+          <div class="section-headline">
+            <h3 data-i18n="translatorTitle">Emergency Translator</h3>
+            <span data-i18n="showLocals">To show locals</span>
+          </div>
+          <div class="translator-window">
+            <textarea id="translator-input" rows="3" data-i18n-placeholder="translatorPlaceholder" placeholder="Describe the problem or type what you need..."></textarea>
+            <div class="action-row">
+              <button class="secondary-button" type="button" data-action="translate-custom" data-i18n="translateButton">Translate</button>
+              <button class="ghost-button" type="button" data-action="speak-custom-translation" data-i18n="readAloud">Read aloud</button>
+            </div>
+            <div class="translator-output" id="translator-output" aria-live="polite"></div>
+          </div>
+          <div class="section-headline compact-headline">
+            <h3 data-i18n="templatePhrases">Template phrases</h3>
+          </div>
+          <div class="translation-list" id="sos-phrase-list"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="travelSettings">Travel Settings</h3>
+            <span data-i18n="profileSubtitle">Pick your language, home country, destination, contacts, notes, and saved reports.</span>
+          </div>
+          <div class="action-row">
+            <button class="secondary-button" type="button" data-action="open-profile" data-i18n="openProfileSettings">Open Profile Settings</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="hazards">
+        <div class="screen-head">
+          <div>
+            <p class="screen-kicker" data-i18n="hazardsKicker">Local Hazards</p>
+            <h2 data-i18n="hazardsTitle">Warnings for your current area</h2>
+            <p class="screen-subtitle" id="hazards-subtitle">Live-style offline hazard feed</p>
+          </div>
+        </div>
+
+        <section class="stack-list" id="hazards-list"></section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="alertZonesTitle">Custom Alert Zones</h3>
+          </div>
+          <form class="form-stack" id="alert-zone-form">
+            <label class="field">
+              <span data-i18n="zoneName">Zone name</span>
+              <input id="zone-name" name="zoneName" placeholder="Trail, beach, district" required type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="zoneRisk">Risk type</span>
+              <select id="zone-risk" name="zoneRisk">
+                <option value="wildlife">Wildlife / bites</option>
+                <option value="heat">Heat</option>
+                <option value="flood">Flood / storm</option>
+                <option value="war">Conflict / shelling</option>
+                <option value="infrastructure">Power / roads</option>
+              </select>
+            </label>
+            <label class="field">
+              <span data-i18n="zoneRadius">Radius (km)</span>
+              <input id="zone-radius" max="50" min="1" name="zoneRadius" type="number" value="5">
+            </label>
+            <label class="field">
+              <span data-i18n="zoneNote">What to watch</span>
+              <input id="zone-note" name="zoneNote" placeholder="shelter, flood path, wildlife area" type="text">
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveZone">Save zone</button>
+          </form>
+          <div class="mini-list" id="alert-zone-list"></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="aid">
+        <div class="screen-head">
+          <div>
+            <p class="screen-kicker" data-i18n="firstAidKicker">First Aid</p>
+            <h2 data-i18n="firstAidTitle">Contextual guides for this destination</h2>
+            <p class="screen-subtitle" id="aid-subtitle">Symptoms, danger level, steps, and source guides</p>
+          </div>
+        </div>
+
+        <section class="stack-list" id="aid-guides"></section>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="map">
+        <div class="screen-head">
+          <div>
+            <p class="screen-kicker" data-i18n="mapKicker">Offline Map</p>
+            <h2 data-i18n="mapTitle">Hospitals, shelters, and consular points</h2>
+            <p class="screen-subtitle" id="map-subtitle">Offline markers for essential help</p>
+          </div>
+        </div>
+
+        <section class="panel map-panel">
+          <iframe id="google-map-frame" title="Google Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="mapLegend">Map legend</h3>
+          </div>
+          <div class="legend-row" id="map-legend"></div>
+          <div class="action-row" id="map-actions"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="criticalPointsTitle">Critical Points</h3>
+            <span data-i18n="tapPointHint">Tap a point to focus it on the map</span>
+          </div>
+          <div class="mini-list" id="map-focus-list"></div>
+        </section>
+
+        <section class="stack-list" id="map-point-list"></section>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="profile">
+        <div class="screen-head">
+          <div>
+            <p class="screen-kicker" data-i18n="profileKicker">Profile</p>
+            <h2 data-i18n="profileTitle">Traveler settings and offline tools</h2>
+            <p class="screen-subtitle" data-i18n="profileSubtitle">Pick your language, home country, destination, contacts, notes, and saved reports.</p>
+          </div>
+        </div>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="travelSettings">Travel Settings</h3>
+          </div>
+          <div class="form-stack">
+            <label class="field">
+              <span data-i18n="uiLanguage">Interface language</span>
+              <select id="language-select"></select>
+            </label>
+            <label class="field">
+              <span data-i18n="homeCountry">Home country</span>
+              <select id="home-country-select"></select>
+            </label>
+            <label class="field">
+              <span data-i18n="destination">Destination</span>
+              <select id="destination-select"></select>
+            </label>
+            <button class="secondary-button" id="pin-area-button" type="button" data-i18n="saveOffline">Save offline pack</button>
+          </div>
+          <div class="profile-meta" id="profile-summary"></div>
+        </section>
+
+        <section class="panel inline-panel medical-card-panel">
+          <div class="section-headline">
+            <div>
+              <h3 data-i18n="medicalCardTitle">Medical Card</h3>
+              <span data-i18n="medicalCardSubtitle">Show to Emergency Responders</span>
+            </div>
+          </div>
+          <form class="form-stack" id="medical-card-form">
+            <label class="field">
+              <span data-i18n="bloodType">Blood Type</span>
+              <input id="medical-blood-type" name="bloodType" placeholder="O+, A-, unknown" type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="allergies">Allergies</span>
+              <textarea id="medical-allergies" name="allergies" placeholder="Penicillin, nuts, bee stings..." rows="3"></textarea>
+            </label>
+            <label class="field">
+              <span data-i18n="chronicDiseases">Chronic Diseases</span>
+              <textarea id="medical-diseases" name="chronicDiseases" placeholder="Asthma, diabetes, heart condition..." rows="3"></textarea>
+            </label>
+            <label class="field">
+              <span data-i18n="medications">Medications</span>
+              <textarea id="medical-medications" name="medications" placeholder="Insulin, anticoagulants, inhaler..." rows="3"></textarea>
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveMedicalCard">Save Medical Card</button>
+          </form>
+          <div class="medical-card-preview" id="medical-card-preview"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="trustedContactsTitle">Trusted Contacts</h3>
+          </div>
+          <form class="form-stack" id="contact-form">
+            <label class="field">
+              <span data-i18n="contactName">Name</span>
+              <input id="contact-name" name="contactName" placeholder="Anna" required type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="contactChannel">Phone or email</span>
+              <input id="contact-channel" name="contactChannel" placeholder="+1..., name@email.com" required type="text">
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveContact">Save contact</button>
+          </form>
+          <div class="mini-list" id="trusted-contact-list"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="notesTitle">Personal Notes</h3>
+          </div>
+          <form class="form-stack" id="note-form">
+            <label class="field">
+              <span data-i18n="notePlace">Place</span>
+              <input id="note-place" name="notePlace" placeholder="Camp, station, hotel, shelter" required type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="noteText">Note</span>
+              <textarea id="note-text" name="noteText" placeholder="Shelter in basement, pharmacy near station, safe meeting point..." required rows="4"></textarea>
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveNote">Save note</button>
+          </form>
+          <div class="mini-list" id="notes-list"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="incidentTitle">Incident Reports</h3>
+          </div>
+          <form class="form-stack" id="incident-form">
+            <label class="field">
+              <span data-i18n="incidentType">Type</span>
+              <select id="incident-type" name="incidentType">
+                <option value="fallen-tree">Fallen tree</option>
+                <option value="power-outage">Power outage</option>
+                <option value="blocked-road">Blocked road</option>
+                <option value="medical">Medical risk</option>
+                <option value="fire">Fire / smoke</option>
+                <option value="security">Security / conflict</option>
+              </select>
+            </label>
+            <label class="field">
+              <span data-i18n="incidentDescription">Description</span>
+              <textarea id="incident-description" name="incidentDescription" placeholder="Short local report for your offline feed" required rows="4"></textarea>
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveIncident">Save report</button>
+          </form>
+          <div class="mini-list" id="incident-feed"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="popularPlacesTitle">30 Popular Destinations</h3>
+          </div>
+          <div class="mini-list" id="popular-destinations"></div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-tab is-active" data-tab-target="sos" type="button">
+        <span class="nav-icon"></span>
+        <span data-i18n="tabSos">SOS</span>
+      </button>
+      <button class="nav-tab" data-tab-target="hazards" type="button">
+        <span class="nav-icon"></span>
+        <span data-i18n="tabHazards">Hazards</span>
+      </button>
+      <button class="nav-tab" data-tab-target="aid" type="button">
+        <span class="nav-icon"></span>
+        <span data-i18n="tabAid">First Aid</span>
+      </button>
+      <button class="nav-tab" data-tab-target="map" type="button">
+        <span class="nav-icon"></span>
+        <span data-i18n="tabMap">Map</span>
+      </button>
+      <button class="nav-tab" data-tab-target="profile" type="button">
+        <span class="nav-icon"></span>
+        <span data-i18n="tabProfile">Profile</span>
+      </button>
+    </nav>
+  </div>
+
+  <dialog class="phrase-modal" id="phrase-modal">
+    <div class="phrase-modal-body" id="phrase-modal-body"></div>
+    <div class="phrase-modal-actions">
+      <button class="secondary-button" id="phrase-speak-button" type="button" data-i18n="speakPhrase">Speak</button>
+      <button class="ghost-button" id="phrase-close-button" type="button" data-i18n="close">Close</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
