@@ -65,7 +65,7 @@
       close: "Close",
       callNow: "Call now",
       openGuide: "Open guide",
-      showTranslation: "Show translation",
+      showTranslation: "Show phrase",
       shareLocation: "Share live location",
       remove: "Remove",
       currentArea: "Current area",
@@ -90,6 +90,8 @@
       openFullMap: "Open full Google Maps",
       emergencyAssembly: "Emergency point",
       route: "Route",
+      mapCustomZones: "Custom zones",
+      mapIncidentReports: "Incident reports",
       popularLanguageTag: "Popular language",
       countryTag: "Country",
       selectDestination: "Use this destination",
@@ -122,11 +124,11 @@
       nearbyHelpTitle: "Nearest Help by GPS",
       countryRulesTitle: "General Rules in This Country",
       weatherTitle: "Weather and Possible Anomalies",
-      translatorTitle: "Emergency Translator",
+      translatorTitle: "Emergency Phrase Helper",
       translatorPlaceholder: "Describe the problem or type what you need...",
-      translateButton: "Translate",
+      translateButton: "Find phrase",
       readAloud: "Read aloud",
-      translationResult: "Translation result",
+      translationResult: "Matched emergency phrase",
       templatePhrases: "Template phrases",
       aidSituationCount: "emergency situations",
       quickSteps: "Rapid steps",
@@ -198,7 +200,7 @@
       close: "Закрити",
       callNow: "Зателефонувати",
       openGuide: "Вiдкрити гiд",
-      showTranslation: "Показати переклад",
+      showTranslation: "Показати фразу",
       shareLocation: "Подiлитися live location",
       remove: "Видалити",
       currentArea: "Поточний район",
@@ -223,6 +225,8 @@
       openFullMap: "Вiдкрити Google Maps",
       emergencyAssembly: "Точка безпеки",
       route: "Маршрут",
+      mapCustomZones: "Власнi зони",
+      mapIncidentReports: "Репорти про подiї",
       popularLanguageTag: "Популярна мова",
       countryTag: "Країна",
       selectDestination: "Обрати цей напрямок",
@@ -255,11 +259,11 @@
       nearbyHelpTitle: "Найближча допомога за GPS",
       countryRulesTitle: "Загальнi правила поведiнки в цiй країнi",
       weatherTitle: "Погода та можливi аномалiї",
-      translatorTitle: "Екстрений перекладач",
+      translatorTitle: "Пiдбiр екстреної фрази",
       translatorPlaceholder: "Опишiть проблему або напишiть, що вам потрiбно...",
-      translateButton: "Перекласти",
+      translateButton: "Знайти фразу",
       readAloud: "Озвучити",
-      translationResult: "Результат перекладу",
+      translationResult: "Пiдiбрана екстрена фраза",
       templatePhrases: "Шаблоннi фрази",
       aidSituationCount: "екстрених ситуацiй",
       quickSteps: "Швидкi кроки",
@@ -1195,6 +1199,7 @@
     ambulance: { source: bi("Please call an ambulance", "Будь ласка, викличте швидку") },
     allergy: { source: bi("I have an allergy", "У мене алергiя") },
     pain: { source: bi("I am in severe pain", "У мене сильний бiль") },
+    fracture: { source: bi("I think I broke a bone", "Думаю, у мене перелом") },
     hospital: { source: bi("Take me to the nearest hospital", "Вiдвезiть мене до найближчої лiкарнi") },
     embassy: { source: bi("Help me contact my embassy", "Допоможiть зв'язатися з посольством") }
   };
@@ -1205,6 +1210,7 @@
       ambulance: { local: "Please call an ambulance", translit: "Please call an ambulance" },
       allergy: { local: "I have an allergy", translit: "I have an allergy" },
       pain: { local: "I am in severe pain", translit: "I am in severe pain" },
+      fracture: { local: "I think I broke a bone", translit: "I think I broke a bone" },
       hospital: { local: "Take me to the nearest hospital", translit: "Take me to the nearest hospital" },
       embassy: { local: "Help me contact my embassy", translit: "Help me contact my embassy" }
     },
@@ -1213,6 +1219,7 @@
       ambulance: { local: "Будь ласка, викличте швидку", translit: "Bud laska, vyklychte shvydku" },
       allergy: { local: "У мене алергiя", translit: "U mene alerhiia" },
       pain: { local: "У мене сильний бiль", translit: "U mene sylnyi bil" },
+      fracture: { local: "Думаю, у мене перелом", translit: "Dumaiu, u mene perelom" },
       hospital: { local: "Вiдвезiть мене до найближчої лiкарнi", translit: "Vidvezit mene do naiblyzhchoi likarni" },
       embassy: { local: "Допоможiть зв'язатися з посольством", translit: "Dopomozhit zviazatyssia z posolstvom" }
     },
@@ -1317,6 +1324,7 @@
       ambulance: { local: "Παρακαλω καλεστε ασθενοφορο", translit: "Parakalo kaleste asthenoforo" },
       allergy: { local: "Εχω αλλεργια", translit: "Echo allergia" },
       pain: { local: "Εχω εντονο πονο", translit: "Echo entono pono" },
+      fracture: { local: "Νομιζω οτι εσπασα ενα κοκαλο", translit: "Nomizo oti espasa ena kokalo" },
       hospital: { local: "Πηγαιντε με στο κοντινοτερο νοσοκομειο", translit: "Pigaine me sto kontinitero nosokomeio" },
       embassy: { local: "Βοηθηστε με να επικοινωνησω με την πρεσβεια μου", translit: "Voithiste me na epikoinoniso me tin presveia mou" }
     },
@@ -1432,9 +1440,13 @@
     return Object.keys(phraseBase).map((id) => ({
       id,
       source: phraseBase[id].source,
-      local: target[id].local,
-      translit: target[id].translit
+      local: (target[id] || phraseLocales.en[id] || {}).local || pickFallbackText(phraseBase[id].source),
+      translit: (target[id] || phraseLocales.en[id] || {}).translit || ""
     }));
+  }
+
+  function pickFallbackText(value) {
+    return value.en || value.uk || Object.values(value)[0] || "";
   }
 
   function makeHospitals(seed, emergencyNumbers) {
@@ -1444,6 +1456,7 @@
         name: `${seed.name} Central Emergency Hospital`,
         phone: medical.number,
         address: `Main emergency hospital zone in ${seed.name}`,
+        mapQuery: `hospital near ${seed.name} ${seed.country}`,
         x: 67,
         y: 42,
         verified: false
@@ -1452,6 +1465,7 @@
         name: `${seed.name} Tourist Medical Clinic`,
         phone: medical.number,
         address: `Tourist support clinic near the central district of ${seed.name}`,
+        mapQuery: `medical clinic near ${seed.name} ${seed.country}`,
         x: 44,
         y: 66,
         verified: false

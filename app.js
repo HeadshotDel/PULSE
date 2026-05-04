@@ -371,7 +371,6 @@
         <div class="hero-badges">
           <span class="pill active">${escapeHtml(t("localLanguage"))}: ${escapeHtml(destination.localLanguageName)}</span>
           <span class="pill">${escapeHtml(t("homeCountry"))}: ${escapeHtml(pickText(homeCountry.label))}</span>
-          <span class="pill">${escapeHtml(t("callEmergency"))}: ${escapeHtml(primaryMedical.number)}</span>
         </div>
       </div>
     `;
@@ -384,12 +383,14 @@
             <div class="service-ring">${escapeHtml(pickText(item.label).slice(0, 1))}</div>
             <small>${escapeHtml(pickText(item.label))}</small>
             <strong class="service-number mono">${escapeHtml(item.number)}</strong>
+            <span class="service-note">${escapeHtml(pickText(item.note))}</span>
           </a>
         `
       )
       .join("");
 
-    refs.sosConsularCard.innerHTML = `
+    refs.sosConsularCard.innerHTML = [
+      `
       <article class="consular-card">
         <div class="badge-row">
           <span class="badge ${consular.verified ? "low" : "medium"}">${escapeHtml(consular.verified ? t("verifiedOfficial") : t("seedDirectory"))}</span>
@@ -413,7 +414,47 @@
           }
         </div>
       </article>
-    `;
+      `,
+      ...destination.hospitals.map((item) => {
+        const mapUrl = googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address)));
+        return `
+          <article class="consular-card">
+            <div class="badge-row">
+              <span class="badge ${item.verified ? "low" : "medium"}">${escapeHtml(item.verified ? t("verifiedOfficial") : t("seedDirectory"))}</span>
+              <span class="pill">${escapeHtml(t("hospitals"))}</span>
+            </div>
+            <div>
+              <strong>${escapeHtml(item.name)}</strong>
+              <p>${escapeHtml(item.address)}</p>
+            </div>
+            <div class="consular-actions">
+              <a class="link-button" href="tel:${dialNumber(item.phone)}">${escapeHtml(item.phone)}</a>
+              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(mapUrl)}">${escapeHtml(t("openFullMap"))}</button>
+            </div>
+          </article>
+        `;
+      }),
+      ...destination.shelters.slice(0, 2).map((item) => {
+        const title = pickText(item.name);
+        const note = pickText(item.note);
+        const mapUrl = googleExternalUrl(pointDescriptor(destination, item.x, item.y, title, note, title, mapSearchQuery(destination, title, note)));
+        return `
+          <article class="consular-card">
+            <div class="badge-row">
+              <span class="badge medium">${escapeHtml(t("seedDirectory"))}</span>
+              <span class="pill">${escapeHtml(t("shelters"))}</span>
+            </div>
+            <div>
+              <strong>${escapeHtml(title)}</strong>
+              <p>${escapeHtml(note)}</p>
+            </div>
+            <div class="consular-actions">
+              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(mapUrl)}">${escapeHtml(t("openFullMap"))}</button>
+            </div>
+          </article>
+        `;
+      })
+    ].join("");
 
     const origin = state.lastLocation || destination.centroid;
     const helpPoints = buildSOSHelpPoints(destination, consular);
@@ -598,7 +639,7 @@
     const consular = getConsularSupport();
     const customZones = state.alertZones.filter((zone) => zone.destination === destination.id);
     const reports = state.incidentReports.filter((item) => item.destination === destination.id);
-    const criticalPoints = buildCriticalPoints(destination);
+    const criticalPoints = buildCriticalPoints(destination, customZones, reports);
     const focusedPoint = getFocusedMapPoint(criticalPoints);
 
     refs.mapSubtitle.textContent = `${pickText(destination.name)} - ${t("offlineReady")}`;
@@ -608,7 +649,9 @@
       legendItem("#1fca8d", t("hospitals")),
       legendItem("#f4c542", t("shelters")),
       legendItem("#ff2f3d", t("consularSupport")),
-      legendItem("#ff9d28", t("route"))
+      legendItem("#ff9d28", t("route")),
+      legendItem("#4f8df7", t("mapCustomZones")),
+      legendItem("#ff9d28", t("mapIncidentReports"))
     ].join("");
 
     refs.mapActions.innerHTML = `
@@ -651,7 +694,7 @@
             <p>${escapeHtml(item.address)}</p>
             <div class="action-row">
               <a class="link-button" href="tel:${dialNumber(item.phone)}">${escapeHtml(item.phone)}</a>
-              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address)))}">${escapeHtml(t("openFullMap"))}</button>
+              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address))))}">${escapeHtml(t("openFullMap"))}</button>
             </div>
           </article>
         `
@@ -670,7 +713,38 @@
             ${consular.url ? `<button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(consular.url)}">${escapeHtml(t("openConsularInfo"))}</button>` : ""}
           </div>
         </article>
-      `
+      `,
+      ...customZones.map(
+        (zone) => `
+          <article class="mini-item">
+            <div class="mini-meta">
+              <span class="badge medium">${escapeHtml(t("mapCustomZones"))}</span>
+              <span class="pill">${escapeHtml(pickText(riskLabels[zone.risk] || zone.risk))}</span>
+              <span class="pill">${escapeHtml(zone.radius)} km</span>
+            </div>
+            <strong>${escapeHtml(zone.name)}</strong>
+            <p>${escapeHtml(zone.note || t("watchFor"))}</p>
+            <div class="action-row">
+              <button class="link-button" type="button" data-action="focus-map-point" data-id="custom-zone-${escapeHtml(zone.id)}">${escapeHtml(t("tapPointHint"))}</button>
+            </div>
+          </article>
+        `
+      ),
+      ...reports.map(
+        (report) => `
+          <article class="mini-item">
+            <div class="mini-meta">
+              <span class="badge high">${escapeHtml(t("mapIncidentReports"))}</span>
+              <span class="pill">${escapeHtml(pickText(incidentLabels[report.type] || report.type))}</span>
+            </div>
+            <strong>${escapeHtml(report.description)}</strong>
+            <small>${escapeHtml(formatDate(report.createdAt))}</small>
+            <div class="action-row">
+              <button class="link-button" type="button" data-action="focus-map-point" data-id="incident-${escapeHtml(report.id)}">${escapeHtml(t("tapPointHint"))}</button>
+            </div>
+          </article>
+        `
+      )
     ].join("");
   }
 
@@ -1086,7 +1160,7 @@
     refs.translatorOutput.innerHTML = `
       <span class="sheet-label">${escapeHtml(t("translationResult"))}</span>
       <strong>${escapeHtml(result.local)}</strong>
-      <p>${escapeHtml(result.translit)}</p>
+      ${result.translit ? `<p>${escapeHtml(result.translit)}</p>` : ""}
       ${rawText ? `<small>${escapeHtml(rawText)}</small>` : ""}
     `;
   }
@@ -1095,9 +1169,10 @@
     const text = rawText.toLowerCase();
     const keywordMap = [
       { id: "ambulance", words: ["ambulance", "emergency", "unconscious", "not breathing", "cannot breathe", "bleeding", "швидка", "екстр", "не диха", "кров", "непритом"] },
-      { id: "doctor", words: ["doctor", "medical", "hospital", "sick", "injured", "fever", "лiкар", "медич", "хвор", "травм", "температур"] },
+      { id: "fracture", words: ["broken leg", "broken arm", "broken bone", "fracture", "сломал", "сломала", "сломать", "слом", "перелом", "нога", "ногу", "рука", "руку", "зламав", "зламала", "злам", "перелом"] },
+      { id: "doctor", words: ["doctor", "medical", "hospital", "sick", "injured", "fever", "лiкар", "медич", "хвор", "травм", "температур", "врач", "доктор", "больниц", "температур"] },
       { id: "allergy", words: ["allergy", "allergic", "sting", "swelling", "rash", "алерг", "укус", "набряк", "висип"] },
-      { id: "pain", words: ["pain", "hurt", "burn", "bite", "broken", "бiль", "болить", "опiк", "злам", "перелом"] },
+      { id: "pain", words: ["pain", "hurt", "burn", "bite", "бiль", "болить", "опiк", "боль", "болит", "ожог"] },
       { id: "hospital", words: ["nearest hospital", "clinic", "medical center", "лiкарня", "клiнiка", "медцентр"] },
       { id: "embassy", words: ["embassy", "consulate", "passport", "documents", "посольство", "консульство", "паспорт", "документ"] }
     ];
@@ -1113,7 +1188,7 @@
 
     return {
       local: phrase.local,
-      translit: `${phrase.translit} · ${rawText}`
+      translit: phrase.translit
     };
   }
 
@@ -1294,19 +1369,19 @@
         type: t("hospitals"),
         tone: "low",
         phone: item.phone,
-        point: pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name)
+        point: pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address))
       })),
       ...destination.shelters.slice(0, 2).map((item) => ({
         type: t("shelters"),
         tone: "medium",
         phone: "",
-        point: pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.note), pickText(item.name))
+        point: pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.note), pickText(item.name), mapSearchQuery(destination, pickText(item.name), pickText(item.note)))
       })),
       {
         type: t("consularSupport"),
         tone: "critical",
         phone: consular.phone,
-        point: pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular-help")
+        point: pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular-help", mapSearchQuery(destination, consular.title, consular.address))
       }
     ];
   }
@@ -1320,32 +1395,45 @@
     return `${km < 10 ? km.toFixed(1) : Math.round(km)} km`;
   }
 
-  function buildCriticalPoints(destination) {
+  function buildCriticalPoints(destination, customZones = [], reports = []) {
     const points = [];
+    const consular = getConsularSupport();
 
     points.push(pointDescriptor(destination, 50, 50, t("myLocation"), `${pickText(destination.name)}, ${pickText(destination.country)}`, "me"));
 
     destination.hospitals.forEach((item, index) => {
-      points.push(pointDescriptor(destination, item.x, item.y, item.name, item.address, `hospital-${index}`));
+      points.push(pointDescriptor(destination, item.x, item.y, item.name, item.address, `hospital-${index}`, item.mapQuery || mapSearchQuery(destination, item.name, item.address)));
     });
 
     destination.shelters.forEach((item, index) => {
-      points.push(pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.type), `shelter-${index}`));
+      points.push(pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.type), `shelter-${index}`, mapSearchQuery(destination, pickText(item.name), pickText(item.note))));
     });
 
-    points.push(pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, t("consularSupport"), pickText(destination.consularPoint.address), "consular"));
+    points.push(pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular", mapSearchQuery(destination, consular.title, consular.address)));
+
+    customZones.forEach((zone) => {
+      const label = pickText(riskLabels[zone.risk] || zone.risk);
+      const subtitle = [label, zone.radius ? `${zone.radius} km` : "", zone.note || ""].filter(Boolean).join(" · ");
+      points.push(pointDescriptor(destination, zone.x, zone.y, zone.name, subtitle, `custom-zone-${zone.id}`));
+    });
+
+    reports.forEach((report) => {
+      const label = pickText(incidentLabels[report.type] || report.type);
+      points.push(pointDescriptor(destination, report.x, report.y, label, report.description, `incident-${report.id}`));
+    });
 
     return points;
   }
 
-  function pointDescriptor(destination, x, y, title, subtitle, id) {
+  function pointDescriptor(destination, x, y, title, subtitle, id, query) {
     const coords = approximateCoords(destination, x, y);
     return {
       id: id || createId("point"),
       title,
       subtitle,
       lat: coords.lat,
-      lon: coords.lon
+      lon: coords.lon,
+      query: query || ""
     };
   }
 
@@ -1378,15 +1466,17 @@
   }
 
   function googleEmbedUrl(point) {
-    return `https://www.google.com/maps?q=${encodeURIComponent(`${point.lat},${point.lon}`)}&z=13&output=embed`;
+    const query = point.query || `${point.lat},${point.lon}`;
+    return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=13&output=embed`;
   }
 
   function googleExternalUrl(point) {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${point.lat},${point.lon}`)}`;
+    const query = point.query || `${point.lat},${point.lon}`;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
   }
 
   function youtubeSearchUrl(guide, destination) {
-    const query = `${pickText(guide.title)} first aid ${pickText(destination.name)}`;
+    const query = pickText(guide.title);
     return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   }
 
@@ -1395,10 +1485,17 @@
       return;
     }
 
-    const opened = window.open(url, "_blank", "noopener,noreferrer");
-    if (!opened) {
-      window.location.href = url;
-    }
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  function mapSearchQuery(destination, title, address) {
+    return [title, address, pickText(destination.name), pickText(destination.country)].filter(Boolean).join(" ");
   }
 
   function removeById(key, id) {
