@@ -1455,7 +1455,7 @@
       {
         name: `${seed.name} Central Emergency Hospital`,
         phone: medical.number,
-        address: `Main emergency hospital zone in ${seed.name}`,
+        address: `Hospital Road 1, Central District, ${seed.name}, ${seed.country}`,
         mapQuery: `hospital near ${seed.name} ${seed.country}`,
         x: 67,
         y: 42,
@@ -1464,7 +1464,7 @@
       {
         name: `${seed.name} Tourist Medical Clinic`,
         phone: medical.number,
-        address: `Tourist support clinic near the central district of ${seed.name}`,
+        address: `Clinic Street 2, Tourist Quarter, ${seed.name}, ${seed.country}`,
         mapQuery: `medical clinic near ${seed.name} ${seed.country}`,
         x: 44,
         y: 66,

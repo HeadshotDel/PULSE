@@ -268,6 +268,10 @@
       .replaceAll('"', "&quot;");
   }
 
+  function biText(en, uk) {
+    return { en, uk };
+  }
+
   function getDestination() {
     return appData.destinations[state.destination] || appData.destinations[appData.defaultState.destination];
   }
@@ -279,6 +283,17 @@
   function getConsularSupport() {
     const homeCountry = getHomeCountry();
     const destination = getDestination();
+
+    if (homeCountry.id === "ua" && destination.id === "athens") {
+      return {
+        title: pickText(biText("Embassy of Ukraine in Greece", "Посольство України в Грецiї")),
+        note: pickText(biText("Official consular support for Ukrainians in Greece.", "Офiцiйна консульська допомога українцям у Грецiї.")),
+        phone: "+302106800230",
+        url: "https://greece.mfa.gov.ua",
+        verified: true,
+        address: "2 Stephanou Delta Str., 152 37 Filothei, Athens, Greece"
+      };
+    }
 
     if (homeCountry.consular) {
       return {
@@ -380,7 +395,7 @@
       .map(
         (item) => `
           <a class="service-card" href="tel:${dialNumber(item.number)}" aria-label="${escapeHtml(pickText(item.label))}">
-            <div class="service-ring">${escapeHtml(pickText(item.label).slice(0, 1))}</div>
+            <div class="service-ring">${iconSvg(serviceIconName(item.kind))}</div>
             <small>${escapeHtml(pickText(item.label))}</small>
             <strong class="service-number mono">${escapeHtml(item.number)}</strong>
             <span class="service-note">${escapeHtml(pickText(item.note))}</span>
@@ -522,13 +537,13 @@
         return `
           <article class="hazard-card">
             <div class="hazard-strip ${tone}">
-              <span>${escapeHtml(pickText(alert.levelLabel))}</span>
+              <span class="icon-label">${iconSvg(hazardIconName(alert))}<span>${escapeHtml(pickText(alert.levelLabel))}</span></span>
               <span>${escapeHtml(pickText(alert.tag))}</span>
             </div>
             <div class="badge-row">
               <span class="badge ${alert.severity}">${escapeHtml(pickText(appData.dangerMeta[alert.severity].label))}</span>
             </div>
-            <h3>${escapeHtml(pickText(alert.title))}</h3>
+            <h3 class="icon-title">${iconSvg(hazardIconName(alert))}<span>${escapeHtml(pickText(alert.title))}</span></h3>
             <p>${escapeHtml(pickText(alert.body))}</p>
             <ul>
               ${pickArray(alert.actions)
@@ -571,7 +586,7 @@
     refs.aidSubtitle.textContent = `${pickText(destination.name)} - ${pickText(destination.country)} · ${guideIds.length} ${t("aidSituationCount")}`;
 
     refs.aidGuides.innerHTML = guideIds
-      .map((guideId, index) => {
+      .map((guideId) => {
         const guide = appData.aidGuides[guideId];
         const danger = appData.dangerMeta[guide.danger];
         const symptoms = pickArray(guide.symptoms);
@@ -580,13 +595,13 @@
         const whatToDo = pickArray(guide.whatToDo).length ? pickArray(guide.whatToDo) : steps.slice(0, 4);
         const overview = pickArray(guide.overview).length ? pickArray(guide.overview) : [pickText(guide.summary), ...pickArray(guide.avoid).slice(0, 2)];
         return `
-          <details class="aid-card"${index === 0 ? " open" : ""}>
+          <details class="aid-card">
             <summary>
               <div class="aid-summary">
                 <div class="badge-row">
-                  <span class="badge ${guide.danger}">${escapeHtml(pickText(danger.label))}</span>
+                  <span class="badge ${guide.danger} icon-label">${iconSvg(aidIconName(guide.id))}<span>${escapeHtml(pickText(danger.label))}</span></span>
                 </div>
-                <div class="aid-summary-title">${escapeHtml(pickText(guide.title))}</div>
+                <div class="aid-summary-title icon-title">${iconSvg(aidIconName(guide.id))}<span>${escapeHtml(pickText(guide.title))}</span></div>
                 <div class="symptom-chips">
                   ${symptoms
                     .slice(0, 5)
@@ -1294,10 +1309,61 @@
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    const speak = (voices = []) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      const voice = pickSpeechVoice(voices, lang);
+      if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+      } else {
+        utterance.lang = speechFallbackLang(lang);
+      }
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    };
+
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length) {
+      speak(voices);
+      return;
+    }
+
+    let didSpeak = false;
+    window.speechSynthesis.onvoiceschanged = () => {
+      if (didSpeak) {
+        return;
+      }
+      didSpeak = true;
+      speak(window.speechSynthesis.getVoices());
+    };
+
+    window.setTimeout(() => {
+      if (!didSpeak) {
+        didSpeak = true;
+        speak([]);
+      }
+    }, 250);
+  }
+
+  function pickSpeechVoice(voices, lang) {
+    const fallback = speechFallbackLang(lang).toLowerCase();
+    const base = fallback.split("-")[0];
+    return (
+      voices.find((voice) => voice.lang.toLowerCase() === fallback) ||
+      voices.find((voice) => voice.lang.toLowerCase().startsWith(`${base}-`)) ||
+      null
+    );
+  }
+
+  function speechFallbackLang(lang) {
+    const normalized = String(lang || "").toLowerCase();
+    if (normalized.startsWith("ar")) {
+      return "ar-SA";
+    }
+    if (normalized.startsWith("el")) {
+      return "el-GR";
+    }
+    return lang || "en-US";
   }
 
   async function getCurrentLocation() {
@@ -1496,6 +1562,45 @@
 
   function mapSearchQuery(destination, title, address) {
     return [title, address, pickText(destination.name), pickText(destination.country)].filter(Boolean).join(" ");
+  }
+
+  function serviceIconName(kind) {
+    return kind === "medical" ? "medical" : kind === "fire" ? "fire" : "police";
+  }
+
+  function hazardIconName(alert) {
+    const text = `${pickText(alert.tag)} ${pickText(alert.title)}`.toLowerCase();
+    if (text.includes("heat") || text.includes("спек")) return "heat";
+    if (text.includes("storm") || text.includes("flood") || text.includes("шторм") || text.includes("пов")) return "storm";
+    if (text.includes("wildlife") || text.includes("bite") || text.includes("укус")) return "bite";
+    if (text.includes("conflict") || text.includes("air") || text.includes("вiйн") || text.includes("тривог")) return "shelter";
+    return alert.severity === "critical" || alert.severity === "high" ? "alert" : "info";
+  }
+
+  function aidIconName(id) {
+    if (/heat|burn|sun/i.test(id)) return "heat";
+    if (/bleeding|blast|fracture|sprain|head|chest|stroke/i.test(id)) return "medical";
+    if (/allerg|sting|bite|jelly|tick|snake|plant/i.test(id)) return "bite";
+    if (/drowning|hypothermia|altitude|shelter/i.test(id)) return "shelter";
+    if (/choking|cpr|asthma/i.test(id)) return "airway";
+    return "aid";
+  }
+
+  function iconSvg(name) {
+    const icons = {
+      medical: '<path d="M12 4v16M4 12h16"/>',
+      fire: '<path d="M12 21c3.2-1.2 5-3.5 5-6.4 0-2.9-1.9-4.6-3-6.6-.8 1.5-1.7 2.4-3 3.2.4-2.7-.7-4.8-2.3-6.2C8.7 8.3 7 10.2 7 13.8 7 17 8.7 19.7 12 21z"/>',
+      police: '<path d="M12 3l7 3v5c0 4.5-2.7 8.1-7 10-4.3-1.9-7-5.5-7-10V6l7-3z"/>',
+      heat: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+      storm: '<path d="M8 17H6.8A4.8 4.8 0 018 7.6 6 6 0 0119 11a3.5 3.5 0 01-.5 7H16"/><path d="M13 13l-3 5h4l-2 4"/>',
+      bite: '<path d="M8 5c2 0 3 1.5 4 3 1-1.5 2-3 4-3 2.2 0 4 1.8 4 4 0 4-4.4 7.3-8 10-3.6-2.7-8-6-8-10 0-2.2 1.8-4 4-4z"/><path d="M8 13h8"/>',
+      shelter: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
+      airway: '<path d="M12 3v18"/><path d="M12 9c-3 0-5-1.5-6-4"/><path d="M12 9c3 0 5-1.5 6-4"/><path d="M12 14c-3 0-5 1.5-6 4"/><path d="M12 14c3 0 5 1.5 6 4"/>',
+      alert: '<path d="M12 3l10 18H2L12 3z"/><path d="M12 9v5M12 17h.01"/>',
+      info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+      aid: '<path d="M8 3h8v5h5v8h-5v5H8v-5H3V8h5V3z"/>'
+    };
+    return `<svg class="inline-svg-icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.info}</svg>`;
   }
 
   function removeById(key, id) {
