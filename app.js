@@ -284,14 +284,16 @@
     const homeCountry = getHomeCountry();
     const destination = getDestination();
 
-    if (homeCountry.id === "ua" && destination.id === "athens") {
+    if (homeCountry.id === "ua" && appData.ukrainianConsularSupport[destination.id]) {
+      const consular = appData.ukrainianConsularSupport[destination.id];
       return {
-        title: pickText(biText("Embassy of Ukraine in Greece", "Посольство України в Грецiї")),
-        note: pickText(biText("Official consular support for Ukrainians in Greece.", "Офiцiйна консульська допомога українцям у Грецiї.")),
-        phone: "+302106800230",
-        url: "https://greece.mfa.gov.ua",
-        verified: true,
-        address: "2 Stephanou Delta Str., 152 37 Filothei, Athens, Greece"
+        title: pickText(consular.title),
+        note: pickText(consular.note),
+        phone: consular.phone,
+        url: consular.url,
+        verified: consular.verified,
+        address: consular.address,
+        email: consular.email
       };
     }
 
@@ -425,6 +427,11 @@
           ${
             consular.url
               ? `<button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(consular.url)}">${escapeHtml(t("openConsularInfo"))}</button>`
+              : ""
+          }
+          ${
+            consular.email
+              ? `<a class="link-button" href="mailto:${escapeHtml(consular.email)}">${escapeHtml(consular.email)}</a>`
               : ""
           }
         </div>

@@ -2170,6 +2170,51 @@
     spotlight: bi(seed.spotlight, seed.spotlight)
   }));
 
+  const ukrainianConsularSupport = {
+    phuket: consular("Embassy of Ukraine in Thailand", "Посольство України в Таїландi", "87 All Seasons Place, CRC Tower, 33rd Floor, Wireless Road, Lumphini, Pathum Wan, Bangkok 10330, Thailand", "+6626853216", "https://thailand.mfa.gov.ua", "emb_th@mfa.gov.ua"),
+    bangkok: consular("Embassy of Ukraine in Thailand", "Посольство України в Таїландi", "87 All Seasons Place, CRC Tower, 33rd Floor, Wireless Road, Lumphini, Pathum Wan, Bangkok 10330, Thailand", "+6626853216", "https://thailand.mfa.gov.ua", "emb_th@mfa.gov.ua"),
+    bali: consular("Embassy of Ukraine in Indonesia", "Посольство України в Iндонезiї", "Generali Tower, Gran Rubina Business Park, 16th floor, Rasuna Epicentrum, Jl. H. R. Rasuna Said, South Jakarta 12940, Indonesia", "+62212500801", "https://indonesia.mfa.gov.ua", "emb_id@mfa.gov.ua"),
+    singapore: consular("Embassy of Ukraine in Singapore", "Посольство України в Сингапурi", "#16-05 Singapore Land Tower, 50 Raffles Place, Singapore 048623", "+6565356550", "https://singapore.mfa.gov.ua/en", "emb_sg@mfa.gov.ua"),
+    tokyo: consular("Embassy of Ukraine in Japan", "Посольство України в Японiї", "3-5-31 Nishi-Azabu, Minato-ku, Tokyo 106-0031, Japan", "+81354749770", "https://japan.mfa.gov.ua", "emb_jp@mfa.gov.ua"),
+    seoul: consular("Embassy of Ukraine in the Republic of Korea", "Посольство України в Республiцi Корея", "21, Itaewon-ro 45-gil, Yongsan-gu, Seoul 04349, Republic of Korea", "+8227905696", "https://korea.mfa.gov.ua", "emb_kr@mfa.gov.ua"),
+    dubai: consular("Embassy of Ukraine in the UAE", "Посольство України в ОАЕ", "Jdeerah Street, Villa 13, P.O. Box 35572, Abu Dhabi, United Arab Emirates", "+97126327586", "https://uae.mfa.gov.ua", "emb_ae@mfa.gov.ua"),
+    istanbul: consular("Consulate General of Ukraine in Istanbul", "Генеральне консульство України в Стамбулi", "Adakale Sokak 13, Florya-Bakirkoy district, Istanbul, Turkey", "+902126622541", "https://istanbul.mfa.gov.ua", "gc_tr@mfa.gov.ua"),
+    cappadocia: consular("Embassy of Ukraine in Turkey", "Посольство України в Туреччинi", "Sancak Mahallesi, 512. Sokak No: 17, Cankaya, Ankara 06550, Turkey", "+903124405289", "https://turkey.mfa.gov.ua", "emb_tr@mfa.gov.ua"),
+    barcelona: consular("Consulate General of Ukraine in Barcelona", "Генеральне консульство України в Барселонi", "Carrer de Numancia 185, bajos 2, 08034 Barcelona, Spain", "+34934028956", "https://barcelona.mfa.gov.ua", "gc_esb@mfa.gov.ua"),
+    paris: consular("Embassy of Ukraine in France", "Посольство України у Францiї", "21 avenue de Saxe, 75007 Paris, France", "+33143060737", "https://france.mfa.gov.ua", "emb_fr@mfa.gov.ua"),
+    rome: consular("Consular Section of the Embassy of Ukraine in Italy", "Консульський вiддiл Посольства України в Iталiї", "Via Monte Pramaggiore 13, 00141 Rome, Italy", "+390682003641", "https://italy.mfa.gov.ua", "gc_it@mfa.gov.ua"),
+    lisbon: consular("Embassy of Ukraine in Portugal", "Посольство України в Португалiї", "Avenida das Descobertas 18, Restelo, 1400-092 Lisbon, Portugal", "+351213010043", "https://portugal.mfa.gov.ua", "emb_pt@mfa.gov.ua"),
+    london: consular("Consular Section of the Embassy of Ukraine in the UK", "Консульський вiддiл Посольства України у Великiй Британiї", "78 Kensington Park Road, London W11 2PL, United Kingdom", "+442072438923", "https://uk.mfa.gov.ua", "gc_gb@mfa.gov.ua"),
+    amsterdam: consular("Embassy of Ukraine in the Netherlands", "Посольство України в Нiдерландах", "Zeestraat 78, 2518 AD The Hague, Netherlands", "+31703626095", "https://netherlands.mfa.gov.ua", "emb_nl@mfa.gov.ua"),
+    prague: consular("Consular Section of the Embassy of Ukraine in Czechia", "Консульський вiддiл Посольства України в Чехiї", "Charlese de Gaulla 915/27, 160 00 Praha 6, Czech Republic", "+420227020212", "https://czechia.mfa.gov.ua", "emb_cz@mfa.gov.ua"),
+    vienna: consular("Embassy of Ukraine in Austria", "Посольство України в Австрiї", "Naaffgasse 23, 1180 Vienna, Austria", "+431479717211", "https://austria.mfa.gov.ua", "emb_at@mfa.gov.ua"),
+    zurich: consular("Embassy of Ukraine in Switzerland", "Посольство України у Швейцарiї", "Feldeggweg 5, 3005 Bern, Switzerland", "+41313522316", "https://switzerland.mfa.gov.ua", "emb_ch@mfa.gov.ua"),
+    athens: consular("Embassy of Ukraine in Greece", "Посольство України в Грецiї", "2 Stephanou Delta Str., 152 37 Filothei, Athens, Greece", "+302106800230", "https://greece.mfa.gov.ua", "emb_gr@mfa.gov.ua"),
+    marrakech: consular("Embassy of Ukraine in Morocco", "Посольство України в Марокко", "212 Rue Mouaouiya Ben Houdaig, O.L.M. Souissi, 10170 Rabat, Morocco", "+212537657840", "https://morocco.mfa.gov.ua", "emb_ma@mfa.gov.ua"),
+    cairo: consular("Embassy of Ukraine in Egypt", "Посольство України в Єгиптi", "Villa 50, Road 83, Maadi, Cairo, Egypt", "+20223786870", "https://egypt.mfa.gov.ua", "emb_eg@mfa.gov.ua"),
+    "cape-town": consular("Embassy of Ukraine in South Africa", "Посольство України в ПАР", "398 Marais Street, Brooklyn 0181, Pretoria, South Africa", "+27124601946", "https://rsa.mfa.gov.ua", "emb_za@mfa.gov.ua"),
+    "new-york": consular("Consulate General of Ukraine in New York", "Генеральне консульство України в Нью-Йорку", "240 East 49th Street, New York, NY 10017, United States", "+12123716965", "https://ny.mfa.gov.ua", "gc_usn@mfa.gov.ua"),
+    "mexico-city": consular("Embassy of Ukraine in Mexico", "Посольство України в Мексицi", "Paseo de la Reforma 730, Colonia Lomas de Chapultepec, Miguel Hidalgo, C.P. 11000, Mexico City, Mexico", "+525552824744", "https://mexico.mfa.gov.ua", "emb_mx@mfa.gov.ua"),
+    rio: consular("Embassy of Ukraine in Brazil", "Посольство України в Бразилiї", "SHIS QI 5, Conjunto 4, Casa 2, Lago Sul, Brasilia DF, CEP 71615-040, Brazil", "+556133651457", "https://brazil.mfa.gov.ua", "emb_br@mfa.gov.ua"),
+    "buenos-aires": consular("Embassy of Ukraine in Argentina", "Посольство України в Аргентинi", "Olleros 2169, Buenos Aires, Argentina", "+541147753476", "https://argentina.mfa.gov.ua", "emb_ar@mfa.gov.ua"),
+    sydney: consular("Embassy of Ukraine in Australia", "Посольство України в Австралiї", "Level 12, St George Centre, 60 Marcus Clarke Street, Canberra ACT 2601, Australia", "+61262305789", "https://australia.mfa.gov.ua", "emb_au@mfa.gov.ua"),
+    queenstown: consular("Honorary Consulate of Ukraine in Dunedin", "Почесне консульство України в Данiдiнi", "Regus, Level 1, Office 102, 218 George Street, Dunedin 9016, New Zealand", "+64274132412", "https://australia.mfa.gov.ua", "uaconsulsouth@gmail.com"),
+    reykjavik: consular("Embassy of Ukraine in Finland accredited to Iceland", "Посольство України у Фiнляндiї, акредитоване в Iсландiї", "Vahaniityntie 9, 00570 Helsinki, Finland", "+35892289000", "https://finland.mfa.gov.ua/en", "emb_fi@mfa.gov.ua"),
+    kyiv: consular("Ministry of Foreign Affairs of Ukraine", "Мiнiстерство закордонних справ України", "Mykhailivska Square 1, Kyiv 01018, Ukraine", "+380442381588", "https://mfa.gov.ua", "zsmfa@mfa.gov.ua")
+  };
+
+  function consular(enTitle, ukTitle, address, phone, url, email) {
+    return {
+      title: bi(enTitle, ukTitle),
+      note: bi("Official Ukrainian consular contact for this destination.", "Офiцiйний консульський контакт України для цього напрямку."),
+      address,
+      phone,
+      url,
+      email,
+      verified: true
+    };
+  }
+
   window.APP_DATA = {
     defaultState: {
       language: "en",
@@ -2182,6 +2227,7 @@
     dangerMeta,
     aidGuides,
     coreGuideIds,
+    ukrainianConsularSupport,
     destinations,
     popularPlaces
   };
