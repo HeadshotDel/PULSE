@@ -1,6 +1,6 @@
 {
-  "name": "FieldAid",
-  "short_name": "FieldAid",
+  "name": "PULSE",
+  "short_name": "PULSE",
   "description": "Offline travel first aid, local hazards, emergency help, maps, translation, and safe travel tools.",
   "start_url": "./",
   "display": "standalone",

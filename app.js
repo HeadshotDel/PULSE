@@ -58,6 +58,7 @@
       gpsHelpSubtitle: document.querySelector("#gps-help-subtitle"),
       sosHelpPoints: document.querySelector("#sos-help-points"),
       countryRules: document.querySelector("#country-rules"),
+      recommendedVaccinations: document.querySelector("#recommended-vaccinations"),
       weatherPanel: document.querySelector("#weather-panel"),
       translatorInput: document.querySelector("#translator-input"),
       translatorOutput: document.querySelector("#translator-output"),
@@ -76,11 +77,19 @@
       mapPointList: document.querySelector("#map-point-list"),
       profileSummary: document.querySelector("#profile-summary"),
       medicalCardForm: document.querySelector("#medical-card-form"),
+      medicalName: document.querySelector("#medical-name"),
       medicalBloodType: document.querySelector("#medical-blood-type"),
       medicalAllergies: document.querySelector("#medical-allergies"),
       medicalDiseases: document.querySelector("#medical-diseases"),
       medicalMedications: document.querySelector("#medical-medications"),
       medicalCardPreview: document.querySelector("#medical-card-preview"),
+      medicalQrOutput: document.querySelector("#medical-qr-output"),
+      myVaccinationForm: document.querySelector("#my-vaccination-form"),
+      myVaccineName: document.querySelector("#my-vaccine-name"),
+      myVaccineDate: document.querySelector("#my-vaccine-date"),
+      myVaccineNote: document.querySelector("#my-vaccine-note"),
+      myVaccinationList: document.querySelector("#my-vaccination-list"),
+      localSimList: document.querySelector("#local-sim-list"),
       contactForm: document.querySelector("#contact-form"),
       trustedContactList: document.querySelector("#trusted-contact-list"),
       noteForm: document.querySelector("#note-form"),
@@ -140,6 +149,7 @@
     });
     refs.alertZoneForm.addEventListener("submit", handleSaveZone);
     refs.medicalCardForm.addEventListener("submit", handleSaveMedicalCard);
+    refs.myVaccinationForm.addEventListener("submit", handleSaveMyVaccination);
     refs.contactForm.addEventListener("submit", handleSaveContact);
     refs.noteForm.addEventListener("submit", handleSaveNote);
     refs.incidentForm.addEventListener("submit", handleSaveIncident);
@@ -181,11 +191,13 @@
       lastLocation: null,
       mapFocus: "destination",
       medicalCard: {
+        name: "",
         bloodType: "",
         allergies: "",
         chronicDiseases: "",
         medications: ""
-      }
+      },
+      myVaccinations: []
     };
 
     try {
@@ -205,7 +217,8 @@
         trustedContacts: Array.isArray(saved.trustedContacts) ? saved.trustedContacts : [],
         notes: Array.isArray(saved.notes) ? saved.notes : [],
         incidentReports: Array.isArray(saved.incidentReports) ? saved.incidentReports : [],
-        medicalCard: typeof saved.medicalCard === "object" && saved.medicalCard ? { ...base.medicalCard, ...saved.medicalCard } : base.medicalCard
+        medicalCard: typeof saved.medicalCard === "object" && saved.medicalCard ? { ...base.medicalCard, ...saved.medicalCard } : base.medicalCard,
+        myVaccinations: Array.isArray(saved.myVaccinations) ? saved.myVaccinations : []
       };
     } catch (error) {
       return base;
@@ -268,10 +281,6 @@
       .replaceAll('"', "&quot;");
   }
 
-  function biText(en, uk) {
-    return { en, uk };
-  }
-
   function getDestination() {
     return appData.destinations[state.destination] || appData.destinations[appData.defaultState.destination];
   }
@@ -283,19 +292,6 @@
   function getConsularSupport() {
     const homeCountry = getHomeCountry();
     const destination = getDestination();
-
-    if (homeCountry.id === "ua" && appData.ukrainianConsularSupport[destination.id]) {
-      const consular = appData.ukrainianConsularSupport[destination.id];
-      return {
-        title: pickText(consular.title),
-        note: pickText(consular.note),
-        phone: consular.phone,
-        url: consular.url,
-        verified: consular.verified,
-        address: consular.address,
-        email: consular.email
-      };
-    }
 
     if (homeCountry.consular) {
       return {
@@ -321,7 +317,7 @@
   function renderAll() {
     state.language = normalizeLanguage(state.language);
     document.documentElement.lang = localeMap[state.language] || localeMap.en;
-    document.title = `FieldAid - ${pickText(getDestination().name)}`;
+    document.title = `PULSE - ${pickText(getDestination().name)}`;
     populateSelects();
     applyTranslations();
     renderSyncState();
@@ -397,17 +393,15 @@
       .map(
         (item) => `
           <a class="service-card" href="tel:${dialNumber(item.number)}" aria-label="${escapeHtml(pickText(item.label))}">
-            <div class="service-ring">${iconSvg(serviceIconName(item.kind))}</div>
+            <div class="service-ring">${escapeHtml(pickText(item.label).slice(0, 1))}</div>
             <small>${escapeHtml(pickText(item.label))}</small>
             <strong class="service-number mono">${escapeHtml(item.number)}</strong>
-            <span class="service-note">${escapeHtml(pickText(item.note))}</span>
           </a>
         `
       )
       .join("");
 
-    refs.sosConsularCard.innerHTML = [
-      `
+    refs.sosConsularCard.innerHTML = `
       <article class="consular-card">
         <div class="badge-row">
           <span class="badge ${consular.verified ? "low" : "medium"}">${escapeHtml(consular.verified ? t("verifiedOfficial") : t("seedDirectory"))}</span>
@@ -429,54 +423,9 @@
               ? `<button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(consular.url)}">${escapeHtml(t("openConsularInfo"))}</button>`
               : ""
           }
-          ${
-            consular.email
-              ? `<a class="link-button" href="mailto:${escapeHtml(consular.email)}">${escapeHtml(consular.email)}</a>`
-              : ""
-          }
         </div>
       </article>
-      `,
-      ...destination.hospitals.map((item) => {
-        const mapUrl = googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address)));
-        return `
-          <article class="consular-card">
-            <div class="badge-row">
-              <span class="badge ${item.verified ? "low" : "medium"}">${escapeHtml(item.verified ? t("verifiedOfficial") : t("seedDirectory"))}</span>
-              <span class="pill">${escapeHtml(t("hospitals"))}</span>
-            </div>
-            <div>
-              <strong>${escapeHtml(item.name)}</strong>
-              <p>${escapeHtml(item.address)}</p>
-            </div>
-            <div class="consular-actions">
-              <a class="link-button" href="tel:${dialNumber(item.phone)}">${escapeHtml(item.phone)}</a>
-              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(mapUrl)}">${escapeHtml(t("openFullMap"))}</button>
-            </div>
-          </article>
-        `;
-      }),
-      ...destination.shelters.slice(0, 2).map((item) => {
-        const title = pickText(item.name);
-        const note = pickText(item.note);
-        const mapUrl = googleExternalUrl(pointDescriptor(destination, item.x, item.y, title, note, title, mapSearchQuery(destination, title, note)));
-        return `
-          <article class="consular-card">
-            <div class="badge-row">
-              <span class="badge medium">${escapeHtml(t("seedDirectory"))}</span>
-              <span class="pill">${escapeHtml(t("shelters"))}</span>
-            </div>
-            <div>
-              <strong>${escapeHtml(title)}</strong>
-              <p>${escapeHtml(note)}</p>
-            </div>
-            <div class="consular-actions">
-              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(mapUrl)}">${escapeHtml(t("openFullMap"))}</button>
-            </div>
-          </article>
-        `;
-      })
-    ].join("");
+    `;
 
     const origin = state.lastLocation || destination.centroid;
     const helpPoints = buildSOSHelpPoints(destination, consular);
@@ -504,6 +453,22 @@
     refs.countryRules.innerHTML = pickArray(destination.countryRules)
       .map((rule) => `<div class="rule-item">${escapeHtml(rule)}</div>`)
       .join("");
+
+    refs.recommendedVaccinations.innerHTML = Array.isArray(destination.vaccinations) && destination.vaccinations.length
+      ? destination.vaccinations
+          .map(
+            (item) => `
+              <article class="mini-item compact-row">
+                <div class="mini-meta">
+                  <span class="badge low">${escapeHtml(item.status)}</span>
+                </div>
+                <strong>${escapeHtml(item.name)}</strong>
+                <small>${escapeHtml(item.note)}</small>
+              </article>
+            `
+          )
+          .join("")
+      : `<div class="empty-state">${escapeHtml(t("noVaccinationData"))}</div>`;
 
     refs.weatherPanel.innerHTML = `
       <p class="weather-summary">${escapeHtml(pickText(destination.weatherProfile.summary))}</p>
@@ -544,13 +509,13 @@
         return `
           <article class="hazard-card">
             <div class="hazard-strip ${tone}">
-              <span class="icon-label">${iconSvg(hazardIconName(alert))}<span>${escapeHtml(pickText(alert.levelLabel))}</span></span>
+              <span>${escapeHtml(pickText(alert.levelLabel))}</span>
               <span>${escapeHtml(pickText(alert.tag))}</span>
             </div>
             <div class="badge-row">
               <span class="badge ${alert.severity}">${escapeHtml(pickText(appData.dangerMeta[alert.severity].label))}</span>
             </div>
-            <h3 class="icon-title">${iconSvg(hazardIconName(alert))}<span>${escapeHtml(pickText(alert.title))}</span></h3>
+            <h3>${escapeHtml(pickText(alert.title))}</h3>
             <p>${escapeHtml(pickText(alert.body))}</p>
             <ul>
               ${pickArray(alert.actions)
@@ -590,10 +555,10 @@
   function renderAid() {
     const destination = getDestination();
     const guideIds = getAidGuideIds(destination);
-    refs.aidSubtitle.textContent = `${pickText(destination.name)} - ${pickText(destination.country)} · ${guideIds.length} ${t("aidSituationCount")}`;
+    refs.aidSubtitle.textContent = `${pickText(destination.name)} - ${pickText(destination.country)} - ${guideIds.length} ${t("aidSituationCount")}`;
 
     refs.aidGuides.innerHTML = guideIds
-      .map((guideId) => {
+      .map((guideId, index) => {
         const guide = appData.aidGuides[guideId];
         const danger = appData.dangerMeta[guide.danger];
         const symptoms = pickArray(guide.symptoms);
@@ -602,13 +567,14 @@
         const whatToDo = pickArray(guide.whatToDo).length ? pickArray(guide.whatToDo) : steps.slice(0, 4);
         const overview = pickArray(guide.overview).length ? pickArray(guide.overview) : [pickText(guide.summary), ...pickArray(guide.avoid).slice(0, 2)];
         return `
-          <details class="aid-card">
+          <details class="aid-card"${index === 0 ? " open" : ""}>
             <summary>
               <div class="aid-summary">
                 <div class="badge-row">
-                  <span class="badge ${guide.danger} icon-label">${iconSvg(aidIconName(guide.id))}<span>${escapeHtml(pickText(danger.label))}</span></span>
+                  <span class="badge ${guide.danger}">${escapeHtml(pickText(danger.label))}</span>
+                  ${guide.category ? `<span class="pill">${escapeHtml(pickText(guide.category))}</span>` : ""}
                 </div>
-                <div class="aid-summary-title icon-title">${iconSvg(aidIconName(guide.id))}<span>${escapeHtml(pickText(guide.title))}</span></div>
+                <div class="aid-summary-title">${escapeHtml(pickText(guide.title))}</div>
                 <div class="symptom-chips">
                   ${symptoms
                     .slice(0, 5)
@@ -645,6 +611,7 @@
                 <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(youtubeSearchUrl(guide, destination))}">${escapeHtml(t("youtubeSearch"))}</button>
               </div>
               <div class="aid-info-grid">
+                ${guide.id === "panicCalming" ? aidInfoBlock(t("warning"), pickArray(guide.watchFor)) : ""}
                 ${aidInfoBlock(t("causesTitle"), causes)}
                 ${aidInfoBlock(t("whatToDoTitle"), whatToDo)}
                 ${aidInfoBlock(t("overviewTitle"), overview)}
@@ -661,7 +628,7 @@
     const consular = getConsularSupport();
     const customZones = state.alertZones.filter((zone) => zone.destination === destination.id);
     const reports = state.incidentReports.filter((item) => item.destination === destination.id);
-    const criticalPoints = buildCriticalPoints(destination, customZones, reports);
+    const criticalPoints = buildCriticalPoints(destination);
     const focusedPoint = getFocusedMapPoint(criticalPoints);
 
     refs.mapSubtitle.textContent = `${pickText(destination.name)} - ${t("offlineReady")}`;
@@ -671,9 +638,7 @@
       legendItem("#1fca8d", t("hospitals")),
       legendItem("#f4c542", t("shelters")),
       legendItem("#ff2f3d", t("consularSupport")),
-      legendItem("#ff9d28", t("route")),
-      legendItem("#4f8df7", t("mapCustomZones")),
-      legendItem("#ff9d28", t("mapIncidentReports"))
+      legendItem("#ff9d28", t("route"))
     ].join("");
 
     refs.mapActions.innerHTML = `
@@ -716,7 +681,7 @@
             <p>${escapeHtml(item.address)}</p>
             <div class="action-row">
               <a class="link-button" href="tel:${dialNumber(item.phone)}">${escapeHtml(item.phone)}</a>
-              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address))))}">${escapeHtml(t("openFullMap"))}</button>
+              <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(googleExternalUrl(pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item)))}">${escapeHtml(t("openFullMap"))}</button>
             </div>
           </article>
         `
@@ -735,38 +700,7 @@
             ${consular.url ? `<button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(consular.url)}">${escapeHtml(t("openConsularInfo"))}</button>` : ""}
           </div>
         </article>
-      `,
-      ...customZones.map(
-        (zone) => `
-          <article class="mini-item">
-            <div class="mini-meta">
-              <span class="badge medium">${escapeHtml(t("mapCustomZones"))}</span>
-              <span class="pill">${escapeHtml(pickText(riskLabels[zone.risk] || zone.risk))}</span>
-              <span class="pill">${escapeHtml(zone.radius)} km</span>
-            </div>
-            <strong>${escapeHtml(zone.name)}</strong>
-            <p>${escapeHtml(zone.note || t("watchFor"))}</p>
-            <div class="action-row">
-              <button class="link-button" type="button" data-action="focus-map-point" data-id="custom-zone-${escapeHtml(zone.id)}">${escapeHtml(t("tapPointHint"))}</button>
-            </div>
-          </article>
-        `
-      ),
-      ...reports.map(
-        (report) => `
-          <article class="mini-item">
-            <div class="mini-meta">
-              <span class="badge high">${escapeHtml(t("mapIncidentReports"))}</span>
-              <span class="pill">${escapeHtml(pickText(incidentLabels[report.type] || report.type))}</span>
-            </div>
-            <strong>${escapeHtml(report.description)}</strong>
-            <small>${escapeHtml(formatDate(report.createdAt))}</small>
-            <div class="action-row">
-              <button class="link-button" type="button" data-action="focus-map-point" data-id="incident-${escapeHtml(report.id)}">${escapeHtml(t("tapPointHint"))}</button>
-            </div>
-          </article>
-        `
-      )
+      `
     ].join("");
   }
 
@@ -783,11 +717,14 @@
       <span class="pill ${isPinned ? "active" : ""}">${escapeHtml(isPinned ? t("savedOffline") : t("offlineReady"))}</span>
     `;
 
+    refs.medicalName.value = state.medicalCard.name || "";
     refs.medicalBloodType.value = state.medicalCard.bloodType || "";
     refs.medicalAllergies.value = state.medicalCard.allergies || "";
     refs.medicalDiseases.value = state.medicalCard.chronicDiseases || "";
     refs.medicalMedications.value = state.medicalCard.medications || "";
     renderMedicalCardPreview();
+    renderMyVaccinations();
+    renderLocalSimCards(destination);
 
     refs.trustedContactList.innerHTML = state.trustedContacts.length
       ? state.trustedContacts
@@ -944,6 +881,7 @@
   function handleSaveMedicalCard(event) {
     event.preventDefault();
     state.medicalCard = {
+      name: refs.medicalName.value.trim(),
       bloodType: refs.medicalBloodType.value.trim(),
       allergies: refs.medicalAllergies.value.trim(),
       chronicDiseases: refs.medicalDiseases.value.trim(),
@@ -953,6 +891,29 @@
     saveState();
     renderMedicalCardPreview();
     toast(t("medicalCardSaved"));
+  }
+
+  function handleSaveMyVaccination(event) {
+    event.preventDefault();
+    const name = refs.myVaccineName.value.trim();
+    const date = refs.myVaccineDate.value.trim();
+    const note = refs.myVaccineNote.value.trim();
+
+    if (!name || !date) {
+      return;
+    }
+
+    state.myVaccinations.push({
+      id: createId("vaccination"),
+      name,
+      date,
+      note
+    });
+
+    saveState();
+    refs.myVaccinationForm.reset();
+    renderMyVaccinations();
+    toast(t("vaccinationSaved"));
   }
 
   function handleSaveContact(event) {
@@ -1086,6 +1047,13 @@
       return;
     }
 
+    if (action === "delete-vaccination") {
+      event.preventDefault();
+      removeById("myVaccinations", id);
+      renderMyVaccinations();
+      return;
+    }
+
     if (action === "delete-note") {
       event.preventDefault();
       removeById("notes", id);
@@ -1144,6 +1112,12 @@
       return;
     }
 
+    if (action === "generate-medical-qr") {
+      event.preventDefault();
+      generateMedicalQr();
+      return;
+    }
+
     if (action === "alert-contact") {
       event.preventDefault();
       const contact = state.trustedContacts.find((item) => item.id === id);
@@ -1182,19 +1156,23 @@
     refs.translatorOutput.innerHTML = `
       <span class="sheet-label">${escapeHtml(t("translationResult"))}</span>
       <strong>${escapeHtml(result.local)}</strong>
-      ${result.translit ? `<p>${escapeHtml(result.translit)}</p>` : ""}
+      <p>${escapeHtml(result.translit)}</p>
       ${rawText ? `<small>${escapeHtml(rawText)}</small>` : ""}
     `;
   }
 
   function buildCustomTranslation(rawText, destination) {
     const text = rawText.toLowerCase();
+    const customOverride = getCustomTranslationOverride(text, destination);
+    if (customOverride) {
+      return customOverride;
+    }
+
     const keywordMap = [
       { id: "ambulance", words: ["ambulance", "emergency", "unconscious", "not breathing", "cannot breathe", "bleeding", "швидка", "екстр", "не диха", "кров", "непритом"] },
-      { id: "fracture", words: ["broken leg", "broken arm", "broken bone", "fracture", "сломал", "сломала", "сломать", "слом", "перелом", "нога", "ногу", "рука", "руку", "зламав", "зламала", "злам", "перелом"] },
-      { id: "doctor", words: ["doctor", "medical", "hospital", "sick", "injured", "fever", "лiкар", "медич", "хвор", "травм", "температур", "врач", "доктор", "больниц", "температур"] },
+      { id: "doctor", words: ["doctor", "medical", "hospital", "sick", "injured", "fever", "лiкар", "медич", "хвор", "травм", "температур"] },
       { id: "allergy", words: ["allergy", "allergic", "sting", "swelling", "rash", "алерг", "укус", "набряк", "висип"] },
-      { id: "pain", words: ["pain", "hurt", "burn", "bite", "бiль", "болить", "опiк", "боль", "болит", "ожог"] },
+      { id: "pain", words: ["pain", "hurt", "burn", "bite", "broken", "бiль", "болить", "опiк", "злам", "перелом"] },
       { id: "hospital", words: ["nearest hospital", "clinic", "medical center", "лiкарня", "клiнiка", "медцентр"] },
       { id: "embassy", words: ["embassy", "consulate", "passport", "documents", "посольство", "консульство", "паспорт", "документ"] }
     ];
@@ -1210,12 +1188,44 @@
 
     return {
       local: phrase.local,
-      translit: phrase.translit
+      translit: `${phrase.translit} - ${rawText}`
     };
+  }
+
+  function getCustomTranslationOverride(text, destination) {
+    const language = destination.phraseLang || "en";
+    const brokenLegTerms = ["broken leg", "broke my leg", "сломал ногу", "сломала ногу", "зламав ногу", "зламала ногу"];
+
+    if (!brokenLegTerms.some((term) => text.includes(term))) {
+      return null;
+    }
+
+    const translations = {
+      en: ["I broke my leg", "I broke my leg"],
+      uk: ["Я зламав ногу", "Ya zlamav nohu"],
+      el: ["Έσπασα το πόδι μου", "Espasa to podi mou"],
+      tr: ["Bacağımı kırdım", "Bacagimi kirdim"],
+      es: ["Me rompí la pierna", "Me rompi la pierna"],
+      fr: ["Je me suis cassé la jambe", "Je me suis casse la jambe"],
+      it: ["Mi sono rotto la gamba", "Mi sono rotto la gamba"],
+      pt: ["Quebrei a perna", "Quebrei a perna"],
+      de: ["Ich habe mir das Bein gebrochen", "Ich habe mir das Bein gebrochen"],
+      nl: ["Ik heb mijn been gebroken", "Ik heb mijn been gebroken"],
+      cs: ["Zlomil jsem si nohu", "Zlomil jsem si nohu"],
+      th: ["ขาฉันหัก", "Kha chan hak"],
+      ja: ["足を骨折しました", "Ashi o kossetsu shimashita"],
+      ko: ["다리가 부러졌습니다", "Dariga bureojyeotseumnida"],
+      ar: ["كسرت ساقي", "Kasartu saqi"],
+      id: ["Kaki saya patah", "Kaki saya patah"]
+    };
+    const [local, translit] = translations[language] || translations.en;
+
+    return { local, translit };
   }
 
   function renderMedicalCardPreview() {
     const entries = [
+      [t("medicalName"), state.medicalCard.name],
       [t("bloodType"), state.medicalCard.bloodType],
       [t("allergies"), state.medicalCard.allergies],
       [t("chronicDiseases"), state.medicalCard.chronicDiseases],
@@ -1242,6 +1252,86 @@
       : `<div class="empty-state">${escapeHtml(t("emptyMedicalCard"))}</div>`;
   }
 
+  function renderMyVaccinations() {
+    refs.myVaccinationList.innerHTML = state.myVaccinations.length
+      ? state.myVaccinations
+          .map(
+            (item) => `
+              <article class="mini-item compact-row">
+                <div class="mini-meta">
+                  <span class="badge low">${escapeHtml(item.date)}</span>
+                </div>
+                <strong>${escapeHtml(item.name)}</strong>
+                ${item.note ? `<small>${escapeHtml(item.note)}</small>` : ""}
+                <div class="action-row">
+                  <button class="ghost-button" type="button" data-action="delete-vaccination" data-id="${item.id}">${escapeHtml(t("remove"))}</button>
+                </div>
+              </article>
+            `
+          )
+          .join("")
+      : `<div class="empty-state">${escapeHtml(t("emptyMyVaccinations"))}</div>`;
+  }
+
+  function renderLocalSimCards(destination) {
+    refs.localSimList.innerHTML = Array.isArray(destination.simCards) && destination.simCards.length
+      ? destination.simCards
+          .map(
+            (item) => `
+              <article class="mini-item compact-row">
+                <div class="mini-meta">
+                  <span class="badge medium">${escapeHtml(item.type)}</span>
+                </div>
+                <strong>${escapeHtml(item.provider)}</strong>
+                <small>${escapeHtml(item.note)}</small>
+              </article>
+            `
+          )
+          .join("")
+      : `<div class="empty-state">${escapeHtml(t("noSimData"))}</div>`;
+  }
+
+  function generateMedicalQr() {
+    const qrText = buildMedicalQrText();
+    refs.medicalQrOutput.innerHTML = `
+      <article class="qr-card">
+        <div class="qr-canvas-wrap" id="medical-qr-canvas"></div>
+        <small>${escapeHtml(t("qrPrivacyWarning"))}</small>
+      </article>
+    `;
+
+    const target = document.querySelector("#medical-qr-canvas");
+    if (!window.QRCode || !target) {
+      target.innerHTML = `<div class="empty-state">${escapeHtml(t("notSupported"))}</div>`;
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    target.appendChild(canvas);
+    window.QRCode.toCanvas(canvas, qrText, {
+      width: 192,
+      margin: 1,
+      color: {
+        dark: "#111116",
+        light: "#ffffff"
+      }
+    });
+    toast(t("qrGenerated"));
+  }
+
+  function buildMedicalQrText() {
+    const emergencyContact = state.trustedContacts[0];
+    return [
+      "PULSE MEDICAL CARD",
+      `${t("medicalName")}: ${state.medicalCard.name || "-"}`,
+      `${t("bloodType")}: ${state.medicalCard.bloodType || "-"}`,
+      `${t("allergies")}: ${state.medicalCard.allergies || "-"}`,
+      `${t("chronicDiseases")}: ${state.medicalCard.chronicDiseases || "-"}`,
+      `${t("medications")}: ${state.medicalCard.medications || "-"}`,
+      `${t("emergencyContact")}: ${emergencyContact ? `${emergencyContact.name} ${emergencyContact.channel}` : "-"}`
+    ].join("\n");
+  }
+
   async function shareLocation() {
     const destination = getDestination();
     const location =
@@ -1266,7 +1356,7 @@
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "FieldAid SOS", text: message });
+        await navigator.share({ title: "PULSE SOS", text: message });
         toast(t("shareReady"));
         return;
       } catch (error) {
@@ -1287,7 +1377,7 @@
     const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(coords)}`;
 
     return [
-      "FieldAid SOS",
+      "PULSE SOS",
       `${pickText(destination.name)}, ${pickText(destination.country)}`,
       pickText(phrase.source),
       `${t("callEmergency")}: ${pickText(medical.label)} ${medical.number}`,
@@ -1316,61 +1406,10 @@
       return;
     }
 
-    const speak = (voices = []) => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      const voice = pickSpeechVoice(voices, lang);
-      if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-      } else {
-        utterance.lang = speechFallbackLang(lang);
-      }
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    };
-
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length) {
-      speak(voices);
-      return;
-    }
-
-    let didSpeak = false;
-    window.speechSynthesis.onvoiceschanged = () => {
-      if (didSpeak) {
-        return;
-      }
-      didSpeak = true;
-      speak(window.speechSynthesis.getVoices());
-    };
-
-    window.setTimeout(() => {
-      if (!didSpeak) {
-        didSpeak = true;
-        speak([]);
-      }
-    }, 250);
-  }
-
-  function pickSpeechVoice(voices, lang) {
-    const fallback = speechFallbackLang(lang).toLowerCase();
-    const base = fallback.split("-")[0];
-    return (
-      voices.find((voice) => voice.lang.toLowerCase() === fallback) ||
-      voices.find((voice) => voice.lang.toLowerCase().startsWith(`${base}-`)) ||
-      null
-    );
-  }
-
-  function speechFallbackLang(lang) {
-    const normalized = String(lang || "").toLowerCase();
-    if (normalized.startsWith("ar")) {
-      return "ar-SA";
-    }
-    if (normalized.startsWith("el")) {
-      return "el-GR";
-    }
-    return lang || "en-US";
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   }
 
   async function getCurrentLocation() {
@@ -1442,19 +1481,19 @@
         type: t("hospitals"),
         tone: "low",
         phone: item.phone,
-        point: pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item.mapQuery || mapSearchQuery(destination, item.name, item.address))
+        point: pointDescriptor(destination, item.x, item.y, item.name, item.address, item.name, item)
       })),
       ...destination.shelters.slice(0, 2).map((item) => ({
         type: t("shelters"),
         tone: "medium",
         phone: "",
-        point: pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.note), pickText(item.name), mapSearchQuery(destination, pickText(item.name), pickText(item.note)))
+        point: pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.note), pickText(item.name))
       })),
       {
         type: t("consularSupport"),
         tone: "critical",
         phone: consular.phone,
-        point: pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular-help", mapSearchQuery(destination, consular.title, consular.address))
+        point: pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular-help")
       }
     ];
   }
@@ -1468,45 +1507,33 @@
     return `${km < 10 ? km.toFixed(1) : Math.round(km)} km`;
   }
 
-  function buildCriticalPoints(destination, customZones = [], reports = []) {
+  function buildCriticalPoints(destination) {
     const points = [];
-    const consular = getConsularSupport();
 
     points.push(pointDescriptor(destination, 50, 50, t("myLocation"), `${pickText(destination.name)}, ${pickText(destination.country)}`, "me"));
 
     destination.hospitals.forEach((item, index) => {
-      points.push(pointDescriptor(destination, item.x, item.y, item.name, item.address, `hospital-${index}`, item.mapQuery || mapSearchQuery(destination, item.name, item.address)));
+      points.push(pointDescriptor(destination, item.x, item.y, item.name, item.address, `hospital-${index}`, item));
     });
 
     destination.shelters.forEach((item, index) => {
-      points.push(pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.type), `shelter-${index}`, mapSearchQuery(destination, pickText(item.name), pickText(item.note))));
+      points.push(pointDescriptor(destination, item.x, item.y, pickText(item.name), pickText(item.type), `shelter-${index}`));
     });
 
-    points.push(pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, consular.title, consular.address, "consular", mapSearchQuery(destination, consular.title, consular.address)));
-
-    customZones.forEach((zone) => {
-      const label = pickText(riskLabels[zone.risk] || zone.risk);
-      const subtitle = [label, zone.radius ? `${zone.radius} km` : "", zone.note || ""].filter(Boolean).join(" · ");
-      points.push(pointDescriptor(destination, zone.x, zone.y, zone.name, subtitle, `custom-zone-${zone.id}`));
-    });
-
-    reports.forEach((report) => {
-      const label = pickText(incidentLabels[report.type] || report.type);
-      points.push(pointDescriptor(destination, report.x, report.y, label, report.description, `incident-${report.id}`));
-    });
+    points.push(pointDescriptor(destination, destination.consularPoint.x, destination.consularPoint.y, t("consularSupport"), pickText(destination.consularPoint.address), "consular"));
 
     return points;
   }
 
-  function pointDescriptor(destination, x, y, title, subtitle, id, query) {
+  function pointDescriptor(destination, x, y, title, subtitle, id, source) {
     const coords = approximateCoords(destination, x, y);
     return {
       id: id || createId("point"),
       title,
       subtitle,
-      lat: coords.lat,
-      lon: coords.lon,
-      query: query || ""
+      lat: typeof source?.lat === "number" ? source.lat : coords.lat,
+      lon: typeof source?.lon === "number" ? source.lon : coords.lon,
+      query: source?.mapQuery || ""
     };
   }
 
@@ -1567,49 +1594,6 @@
     link.remove();
   }
 
-  function mapSearchQuery(destination, title, address) {
-    return [title, address, pickText(destination.name), pickText(destination.country)].filter(Boolean).join(" ");
-  }
-
-  function serviceIconName(kind) {
-    return kind === "medical" ? "medical" : kind === "fire" ? "fire" : "police";
-  }
-
-  function hazardIconName(alert) {
-    const text = `${pickText(alert.tag)} ${pickText(alert.title)}`.toLowerCase();
-    if (text.includes("heat") || text.includes("спек")) return "heat";
-    if (text.includes("storm") || text.includes("flood") || text.includes("шторм") || text.includes("пов")) return "storm";
-    if (text.includes("wildlife") || text.includes("bite") || text.includes("укус")) return "bite";
-    if (text.includes("conflict") || text.includes("air") || text.includes("вiйн") || text.includes("тривог")) return "shelter";
-    return alert.severity === "critical" || alert.severity === "high" ? "alert" : "info";
-  }
-
-  function aidIconName(id) {
-    if (/heat|burn|sun/i.test(id)) return "heat";
-    if (/bleeding|blast|fracture|sprain|head|chest|stroke/i.test(id)) return "medical";
-    if (/allerg|sting|bite|jelly|tick|snake|plant/i.test(id)) return "bite";
-    if (/drowning|hypothermia|altitude|shelter/i.test(id)) return "shelter";
-    if (/choking|cpr|asthma/i.test(id)) return "airway";
-    return "aid";
-  }
-
-  function iconSvg(name) {
-    const icons = {
-      medical: '<path d="M12 4v16M4 12h16"/>',
-      fire: '<path d="M12 21c3.2-1.2 5-3.5 5-6.4 0-2.9-1.9-4.6-3-6.6-.8 1.5-1.7 2.4-3 3.2.4-2.7-.7-4.8-2.3-6.2C8.7 8.3 7 10.2 7 13.8 7 17 8.7 19.7 12 21z"/>',
-      police: '<path d="M12 3l7 3v5c0 4.5-2.7 8.1-7 10-4.3-1.9-7-5.5-7-10V6l7-3z"/>',
-      heat: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
-      storm: '<path d="M8 17H6.8A4.8 4.8 0 018 7.6 6 6 0 0119 11a3.5 3.5 0 01-.5 7H16"/><path d="M13 13l-3 5h4l-2 4"/>',
-      bite: '<path d="M8 5c2 0 3 1.5 4 3 1-1.5 2-3 4-3 2.2 0 4 1.8 4 4 0 4-4.4 7.3-8 10-3.6-2.7-8-6-8-10 0-2.2 1.8-4 4-4z"/><path d="M8 13h8"/>',
-      shelter: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
-      airway: '<path d="M12 3v18"/><path d="M12 9c-3 0-5-1.5-6-4"/><path d="M12 9c3 0 5-1.5 6-4"/><path d="M12 14c-3 0-5 1.5-6 4"/><path d="M12 14c3 0 5 1.5 6 4"/>',
-      alert: '<path d="M12 3l10 18H2L12 3z"/><path d="M12 9v5M12 17h.01"/>',
-      info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
-      aid: '<path d="M8 3h8v5h5v8h-5v5H8v-5H3V8h5V3z"/>'
-    };
-    return `<svg class="inline-svg-icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.info}</svg>`;
-  }
-
   function removeById(key, id) {
     state[key] = state[key].filter((item) => item.id !== id);
     saveState();
@@ -1631,7 +1615,7 @@
   function buildChannelLink(channel, message) {
     const normalized = channel.replace(/\s+/g, "");
     if (normalized.includes("@")) {
-      return `mailto:${normalized}?subject=${encodeURIComponent("FieldAid SOS")}&body=${encodeURIComponent(message)}`;
+      return `mailto:${normalized}?subject=${encodeURIComponent("PULSE SOS")}&body=${encodeURIComponent(message)}`;
     }
     return `sms:${normalized}?body=${encodeURIComponent(message)}`;
   }

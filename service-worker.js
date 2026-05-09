@@ -1,4 +1,4 @@
-const CACHE_NAME = "fieldaid-v5";
+const CACHE_NAME = "pulse-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,7 +9,6 @@ const APP_SHELL = [
   "./service-worker.js",
   "./assets/icon.svg"
 ];
-const APP_ORIGIN = self.location.origin;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -38,28 +37,19 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  const url = new URL(request.url);
-
-  if (url.origin !== APP_ORIGIN) {
-    return;
-  }
-
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then((response) => response)
-        .catch(() => caches.match("./index.html"))
-    );
-    return;
-  }
-
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
         return cachedResponse;
       }
 
-      return fetch(request);
+      return fetch(request)
+        .then((response) => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          return response;
+        })
+        .catch(() => caches.match("./index.html"));
     })
   );
 });

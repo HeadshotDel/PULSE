@@ -14,7 +14,7 @@
 
   const copy = {
     en: {
-      appTitle: "Travel First Aid",
+      appTitle: "PULSE",
       currentLocation: "Current Location",
       localEmergencyServices: "Local Emergency Services",
       quickTranslation: "Quick Translation",
@@ -65,7 +65,7 @@
       close: "Close",
       callNow: "Call now",
       openGuide: "Open guide",
-      showTranslation: "Show phrase",
+      showTranslation: "Show translation",
       shareLocation: "Share live location",
       remove: "Remove",
       currentArea: "Current area",
@@ -90,8 +90,6 @@
       openFullMap: "Open full Google Maps",
       emergencyAssembly: "Emergency point",
       route: "Route",
-      mapCustomZones: "Custom zones",
-      mapIncidentReports: "Incident reports",
       popularLanguageTag: "Popular language",
       countryTag: "Country",
       selectDestination: "Use this destination",
@@ -124,11 +122,11 @@
       nearbyHelpTitle: "Nearest Help by GPS",
       countryRulesTitle: "General Rules in This Country",
       weatherTitle: "Weather and Possible Anomalies",
-      translatorTitle: "Emergency Phrase Helper",
+      translatorTitle: "Emergency Translator",
       translatorPlaceholder: "Describe the problem or type what you need...",
-      translateButton: "Find phrase",
+      translateButton: "Translate",
       readAloud: "Read aloud",
-      translationResult: "Matched emergency phrase",
+      translationResult: "Translation result",
       templatePhrases: "Template phrases",
       aidSituationCount: "emergency situations",
       quickSteps: "Rapid steps",
@@ -146,10 +144,28 @@
       emptyMedicalCard: "Add critical medical info before travel.",
       gpsActive: "GPS active",
       gpsHint: "Tap the location circle for exact GPS",
-      nearby: "nearby"
+      nearby: "nearby",
+      recommendedVaccinationsTitle: "Recommended Vaccinations",
+      noVaccinationData: "No specific vaccination data added for this destination yet. Check official travel health guidance before departure.",
+      myVaccinationsTitle: "My Vaccinations",
+      vaccineName: "Vaccine name",
+      vaccineDate: "Date / year",
+      vaccineNote: "Optional note",
+      saveVaccination: "Save vaccination",
+      emptyMyVaccinations: "No vaccinations added yet.",
+      vaccinationSaved: "Vaccination saved.",
+      localSimCardsTitle: "Local SIM Cards",
+      noSimData: "No local SIM card data added for this destination yet.",
+      generateMedicalQr: "Generate Medical QR",
+      qrPrivacyWarning: "QR contains your medical information. Show only to trusted medical staff.",
+      qrGenerated: "Medical QR generated.",
+      medicalName: "Name",
+      emergencyContact: "Emergency contact",
+      mentalHealth: "Mental Health",
+      warning: "Warning"
     },
     uk: {
-      appTitle: "Туристична Перша Допомога",
+      appTitle: "PULSE",
       currentLocation: "Поточна Локацiя",
       localEmergencyServices: "Мiсцевi Екстренi Служби",
       quickTranslation: "Швидкий Переклад",
@@ -200,7 +216,7 @@
       close: "Закрити",
       callNow: "Зателефонувати",
       openGuide: "Вiдкрити гiд",
-      showTranslation: "Показати фразу",
+      showTranslation: "Показати переклад",
       shareLocation: "Подiлитися live location",
       remove: "Видалити",
       currentArea: "Поточний район",
@@ -225,8 +241,6 @@
       openFullMap: "Вiдкрити Google Maps",
       emergencyAssembly: "Точка безпеки",
       route: "Маршрут",
-      mapCustomZones: "Власнi зони",
-      mapIncidentReports: "Репорти про подiї",
       popularLanguageTag: "Популярна мова",
       countryTag: "Країна",
       selectDestination: "Обрати цей напрямок",
@@ -259,11 +273,11 @@
       nearbyHelpTitle: "Найближча допомога за GPS",
       countryRulesTitle: "Загальнi правила поведiнки в цiй країнi",
       weatherTitle: "Погода та можливi аномалiї",
-      translatorTitle: "Пiдбiр екстреної фрази",
+      translatorTitle: "Екстрений перекладач",
       translatorPlaceholder: "Опишiть проблему або напишiть, що вам потрiбно...",
-      translateButton: "Знайти фразу",
+      translateButton: "Перекласти",
       readAloud: "Озвучити",
-      translationResult: "Пiдiбрана екстрена фраза",
+      translationResult: "Результат перекладу",
       templatePhrases: "Шаблоннi фрази",
       aidSituationCount: "екстрених ситуацiй",
       quickSteps: "Швидкi кроки",
@@ -281,7 +295,25 @@
       emptyMedicalCard: "Додайте критично важливу медичну iнформацiю перед подорожжю.",
       gpsActive: "GPS активний",
       gpsHint: "Натиснiть коло локацiї для точного GPS",
-      nearby: "поруч"
+      nearby: "поруч",
+      recommendedVaccinationsTitle: "Рекомендованi щеплення",
+      noVaccinationData: "Для цього напрямку ще немає окремих даних про щеплення. Перед виїздом перевiрте офiцiйнi travel health рекомендацiї.",
+      myVaccinationsTitle: "Мої щеплення",
+      vaccineName: "Назва вакцини",
+      vaccineDate: "Дата / рiк",
+      vaccineNote: "Необов'язкова нотатка",
+      saveVaccination: "Зберегти щеплення",
+      emptyMyVaccinations: "Щеплення ще не додано.",
+      vaccinationSaved: "Щеплення збережено.",
+      localSimCardsTitle: "Мiсцевi SIM-картки",
+      noSimData: "Для цього напрямку ще немає даних про мiсцевi SIM-картки.",
+      generateMedicalQr: "Згенерувати медичний QR",
+      qrPrivacyWarning: "QR мiстить вашу медичну iнформацiю. Показуйте його лише медичним працiвникам, яким довiряєте.",
+      qrGenerated: "Медичний QR згенеровано.",
+      medicalName: "Iм'я",
+      emergencyContact: "Екстрений контакт",
+      mentalHealth: "Психологiчна допомога",
+      warning: "Попередження"
     }
   };
 
@@ -1136,6 +1168,58 @@
       ["safety", "breathing", "fluids if alert", "medical check for red flags"],
       ["Panic can mimic heart or breathing emergencies.", "Shock after injury is physical and dangerous.", "Calm instructions help people regain control."]
     ),
+    panicCalming: {
+      id: "panicCalming",
+      danger: "medium",
+      category: bi("Mental Health", "Психологiчна допомога"),
+      title: bi("Panic Attack / Psychological Calming", "Панiчна атака / психологiчне заспокоєння"),
+      summary: bi(
+        "Use grounding, slower breathing, and a trusted contact if panic symptoms continue.",
+        "Використайте заземлення, повiльнiше дихання та контакт з довiреною людиною, якщо симптоми панiки тривають."
+      ),
+      symptoms: bi(
+        ["rapid breathing", "chest tightness", "trembling", "dizziness", "feeling of losing control"],
+        ["швидке дихання", "стискання в грудях", "тремтiння", "запаморочення", "вiдчуття втрати контролю"]
+      ),
+      steps: bi(
+        [
+          "Move to a quieter and safer place.",
+          "Breathe slowly: inhale for 4 seconds, exhale for 6 seconds.",
+          "Name 5 things you can see, 4 you can touch, 3 you can hear.",
+          "Remind yourself: This will pass. I am safe right now.",
+          "Contact a trusted person or local medical help if symptoms continue."
+        ],
+        [
+          "Перейдiть у тихiше та безпечнiше мiсце.",
+          "Дихайте повiльно: вдих 4 секунди, видих 6 секунд.",
+          "Назвiть 5 речей, якi бачите, 4 яких можете торкнутися, 3 якi чуєте.",
+          "Нагадайте собi: це мине. Я зараз у безпецi.",
+          "Зв'яжiться з довiреною людиною або мiсцевою медичною допомогою, якщо симптоми тривають."
+        ]
+      ),
+      avoid: bi(
+        ["do not stay in a crowd if it worsens symptoms", "do not ignore injury, fainting, or severe chest pain"],
+        ["не залишайтеся в натовпi, якщо симптоми посилюються", "не iгноруйте травму, непритомнiсть або сильний бiль у грудях"]
+      ),
+      watchFor: bi(
+        ["Seek urgent medical help if chest pain, fainting, injury, or suicidal thoughts are present."],
+        ["Термiново звернiться по медичну допомогу при болю в грудях, непритомностi, травмi або суїцидальних думках."]
+      ),
+      causes: bi(
+        ["stress", "crowds", "trauma reminders", "heat", "lack of sleep"],
+        ["стрес", "натовпи", "нагадування про травму", "спека", "нестача сну"]
+      ),
+      whatToDo: bi(
+        ["move to safety", "slow breathing", "grounding exercise", "trusted contact"],
+        ["перейти в безпеку", "уповiльнити дихання", "вправа заземлення", "контакт з довiреною людиною"]
+      ),
+      overview: bi(
+        ["Panic symptoms can feel dangerous but often settle with time and support.", "Medical red flags must still be treated urgently.", "A calm helper should speak slowly and give one step at a time."],
+        ["Симптоми панiки можуть вiдчуватися небезпечними, але часто минають з часом i пiдтримкою.", "Медичнi червонi прапорцi все одно потребують термiнової допомоги.", "Спокiйний помiчник має говорити повiльно i давати по одному кроку."]
+      ),
+      sourceUrl: "",
+      videoUrl: ""
+    },
     diabeticEmergency: quickAidGuide(
       "diabeticEmergency",
       "high",
@@ -1185,6 +1269,7 @@
     "eyeInjury",
     "poisoning",
     "panicShock",
+    "panicCalming",
     "insectSting",
     "tickBite",
     "jellyfish",
@@ -1199,7 +1284,6 @@
     ambulance: { source: bi("Please call an ambulance", "Будь ласка, викличте швидку") },
     allergy: { source: bi("I have an allergy", "У мене алергiя") },
     pain: { source: bi("I am in severe pain", "У мене сильний бiль") },
-    fracture: { source: bi("I think I broke a bone", "Думаю, у мене перелом") },
     hospital: { source: bi("Take me to the nearest hospital", "Вiдвезiть мене до найближчої лiкарнi") },
     embassy: { source: bi("Help me contact my embassy", "Допоможiть зв'язатися з посольством") }
   };
@@ -1210,7 +1294,6 @@
       ambulance: { local: "Please call an ambulance", translit: "Please call an ambulance" },
       allergy: { local: "I have an allergy", translit: "I have an allergy" },
       pain: { local: "I am in severe pain", translit: "I am in severe pain" },
-      fracture: { local: "I think I broke a bone", translit: "I think I broke a bone" },
       hospital: { local: "Take me to the nearest hospital", translit: "Take me to the nearest hospital" },
       embassy: { local: "Help me contact my embassy", translit: "Help me contact my embassy" }
     },
@@ -1219,7 +1302,6 @@
       ambulance: { local: "Будь ласка, викличте швидку", translit: "Bud laska, vyklychte shvydku" },
       allergy: { local: "У мене алергiя", translit: "U mene alerhiia" },
       pain: { local: "У мене сильний бiль", translit: "U mene sylnyi bil" },
-      fracture: { local: "Думаю, у мене перелом", translit: "Dumaiu, u mene perelom" },
       hospital: { local: "Вiдвезiть мене до найближчої лiкарнi", translit: "Vidvezit mene do naiblyzhchoi likarni" },
       embassy: { local: "Допоможiть зв'язатися з посольством", translit: "Dopomozhit zviazatyssia z posolstvom" }
     },
@@ -1324,7 +1406,6 @@
       ambulance: { local: "Παρακαλω καλεστε ασθενοφορο", translit: "Parakalo kaleste asthenoforo" },
       allergy: { local: "Εχω αλλεργια", translit: "Echo allergia" },
       pain: { local: "Εχω εντονο πονο", translit: "Echo entono pono" },
-      fracture: { local: "Νομιζω οτι εσπασα ενα κοκαλο", translit: "Nomizo oti espasa ena kokalo" },
       hospital: { local: "Πηγαιντε με στο κοντινοτερο νοσοκομειο", translit: "Pigaine me sto kontinitero nosokomeio" },
       embassy: { local: "Βοηθηστε με να επικοινωνησω με την πρεσβεια μου", translit: "Voithiste me na epikoinoniso me tin presveia mou" }
     },
@@ -1440,13 +1521,9 @@
     return Object.keys(phraseBase).map((id) => ({
       id,
       source: phraseBase[id].source,
-      local: (target[id] || phraseLocales.en[id] || {}).local || pickFallbackText(phraseBase[id].source),
-      translit: (target[id] || phraseLocales.en[id] || {}).translit || ""
+      local: target[id].local,
+      translit: target[id].translit
     }));
-  }
-
-  function pickFallbackText(value) {
-    return value.en || value.uk || Object.values(value)[0] || "";
   }
 
   function makeHospitals(seed, emergencyNumbers) {
@@ -1455,8 +1532,10 @@
       {
         name: `${seed.name} Central Emergency Hospital`,
         phone: medical.number,
-        address: `Hospital Road 1, Central District, ${seed.name}, ${seed.country}`,
-        mapQuery: `hospital near ${seed.name} ${seed.country}`,
+        address: `Main emergency hospital zone in ${seed.name}`,
+        mapQuery: `${seed.name} emergency hospital ${seed.country}`,
+        lat: seed.centroid.lat + 0.018,
+        lon: seed.centroid.lon + 0.018,
         x: 67,
         y: 42,
         verified: false
@@ -1464,13 +1543,124 @@
       {
         name: `${seed.name} Tourist Medical Clinic`,
         phone: medical.number,
-        address: `Clinic Street 2, Tourist Quarter, ${seed.name}, ${seed.country}`,
-        mapQuery: `medical clinic near ${seed.name} ${seed.country}`,
+        address: `Tourist support clinic near the central district of ${seed.name}`,
+        mapQuery: `${seed.name} tourist medical clinic ${seed.country}`,
+        lat: seed.centroid.lat - 0.014,
+        lon: seed.centroid.lon - 0.012,
         x: 44,
         y: 66,
         verified: false
       }
     ];
+  }
+
+  function makeVaccinations(seed) {
+    const routine = [
+      {
+        name: "Tetanus",
+        status: "Routine",
+        note: "Make sure your routine vaccination is up to date."
+      },
+      {
+        name: "Measles / MMR",
+        status: "Routine",
+        note: "Recommended to be up to date before international travel."
+      }
+    ];
+
+    const byRegion = {
+      th: [
+        { name: "Hepatitis A", status: "Recommended", note: "Recommended for most travelers." },
+        { name: "Typhoid", status: "Consider", note: "Consider for street food, rural trips, or longer stays." }
+      ],
+      jp: [{ name: "Japanese Encephalitis", status: "Consider", note: "Consider for rural exposure or longer stays." }],
+      kr: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for many travelers." }],
+      ae: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for most travelers." }],
+      tr: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for most travelers." }],
+      mx: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for most travelers." }],
+      br: [
+        { name: "Hepatitis A", status: "Recommended", note: "Recommended for most travelers." },
+        { name: "Yellow Fever", status: "Consider", note: "Check official guidance for itinerary-specific risk." }
+      ],
+      ar: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for many travelers." }],
+      au: [{ name: "Influenza", status: "Seasonal", note: "Consider seasonal vaccination for crowded travel." }],
+      nz: [{ name: "Influenza", status: "Seasonal", note: "Consider seasonal vaccination for crowded travel." }],
+      ua: [{ name: "Polio", status: "Routine", note: "Make sure routine vaccination is up to date." }],
+      universal: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for many international travelers." }],
+      eu: [{ name: "Tick-borne Encephalitis", status: "Consider", note: "Consider for forest, hiking, or rural exposure in risk areas." }],
+      us: [{ name: "Influenza", status: "Seasonal", note: "Consider seasonal vaccination during travel season." }],
+      uk: [{ name: "Influenza", status: "Seasonal", note: "Consider seasonal vaccination during travel season." }],
+      sg: [{ name: "Hepatitis A", status: "Recommended", note: "Recommended for many travelers." }]
+    };
+
+    return [...(byRegion[seed.system] || byRegion.universal), ...routine];
+  }
+
+  function makeSimCards(seed) {
+    const bySystem = {
+      th: [
+        { provider: "AIS", type: "Tourist SIM / eSIM", note: "Popular option with airport counters and tourist packages." },
+        { provider: "TrueMove H", type: "Tourist SIM / eSIM", note: "Widely available, good urban coverage." }
+      ],
+      tr: [
+        { provider: "Turkcell", type: "Prepaid SIM / eSIM", note: "Strong national coverage and airport availability." },
+        { provider: "Vodafone Turkey", type: "Prepaid SIM", note: "Common tourist option in major cities." }
+      ],
+      eu: [
+        { provider: "Orange", type: "Prepaid SIM / eSIM", note: "Common travel option across many European destinations." },
+        { provider: "Vodafone", type: "Prepaid SIM / eSIM", note: "Widely available in European cities." }
+      ],
+      jp: [
+        { provider: "IIJmio", type: "Travel eSIM", note: "Popular data option for visitors." },
+        { provider: "SoftBank", type: "Prepaid / rental SIM", note: "Available through airport and travel channels." }
+      ],
+      kr: [
+        { provider: "SK Telecom", type: "Tourist SIM / eSIM", note: "Airport pickup and strong urban coverage." },
+        { provider: "KT", type: "Tourist SIM / eSIM", note: "Popular short-term visitor packages." }
+      ],
+      ae: [
+        { provider: "du", type: "Tourist SIM / eSIM", note: "Available at airports and malls." },
+        { provider: "Etisalat", type: "Tourist SIM / eSIM", note: "Wide coverage and visitor plans." }
+      ],
+      sg: [
+        { provider: "Singtel", type: "Tourist SIM / eSIM", note: "Common airport and convenience store option." },
+        { provider: "StarHub", type: "Tourist SIM", note: "Visitor packages with local data." }
+      ],
+      us: [
+        { provider: "T-Mobile", type: "Prepaid SIM / eSIM", note: "Common prepaid option for travelers." },
+        { provider: "AT&T", type: "Prepaid SIM", note: "Broad urban and highway coverage." }
+      ],
+      mx: [
+        { provider: "Telcel", type: "Prepaid SIM", note: "Broad national coverage." },
+        { provider: "AT&T Mexico", type: "Prepaid SIM", note: "Available in major cities." }
+      ],
+      br: [
+        { provider: "Claro", type: "Prepaid SIM", note: "Common urban coverage." },
+        { provider: "Vivo", type: "Prepaid SIM", note: "Popular national operator." }
+      ],
+      ar: [
+        { provider: "Claro", type: "Prepaid SIM", note: "Widely available in cities." },
+        { provider: "Movistar", type: "Prepaid SIM", note: "Common prepaid option." }
+      ],
+      au: [
+        { provider: "Telstra", type: "Prepaid SIM / eSIM", note: "Strong national coverage." },
+        { provider: "Optus", type: "Prepaid SIM / eSIM", note: "Popular urban and tourist option." }
+      ],
+      nz: [
+        { provider: "Spark", type: "Prepaid SIM / eSIM", note: "Common visitor option." },
+        { provider: "One NZ", type: "Prepaid SIM", note: "Available in main travel hubs." }
+      ],
+      ua: [
+        { provider: "Kyivstar", type: "Prepaid SIM / eSIM", note: "Broad local coverage and eSIM support." },
+        { provider: "lifecell", type: "Prepaid SIM / eSIM", note: "Popular data-focused option." }
+      ],
+      universal: [
+        { provider: "Airalo", type: "Travel eSIM", note: "Useful when local SIM details are not confirmed." },
+        { provider: "Nomad", type: "Travel eSIM", note: "Data eSIM option for many destinations." }
+      ]
+    };
+
+    return bySystem[seed.system] || bySystem.universal;
   }
 
   function makeAlerts(seed) {
@@ -2114,6 +2304,7 @@
       focus: bi(`${seed.name}, ${seed.country}`, `${seed.nameUk}, ${seed.countryUk}`),
       localLanguageName: seed.localLanguageName,
       localLanguageCode: seed.localLanguageCode,
+      phraseLang: seed.phraseLang,
       profile: seed.profile,
       guideIds: (() => {
         if (seed.profile === "conflict") {
@@ -2146,6 +2337,8 @@
       alerts: [...makeAlerts(seed), ...makeCommonAlerts(seed)].slice(0, 8),
       countryRules: makeCountryRules(seed),
       weatherProfile: makeWeatherProfile(seed),
+      vaccinations: makeVaccinations(seed),
+      simCards: makeSimCards(seed),
       map: {
         outlinePath: outlineTemplates[seed.mapShape] || outlineTemplates.city,
         riverPath: seed.profile === "conflict" ? "M60 18 C56 30 56 42 60 52 C64 63 67 73 67 84" : "",
@@ -2170,51 +2363,6 @@
     spotlight: bi(seed.spotlight, seed.spotlight)
   }));
 
-  const ukrainianConsularSupport = {
-    phuket: consular("Embassy of Ukraine in Thailand", "Посольство України в Таїландi", "87 All Seasons Place, CRC Tower, 33rd Floor, Wireless Road, Lumphini, Pathum Wan, Bangkok 10330, Thailand", "+6626853216", "https://thailand.mfa.gov.ua", "emb_th@mfa.gov.ua"),
-    bangkok: consular("Embassy of Ukraine in Thailand", "Посольство України в Таїландi", "87 All Seasons Place, CRC Tower, 33rd Floor, Wireless Road, Lumphini, Pathum Wan, Bangkok 10330, Thailand", "+6626853216", "https://thailand.mfa.gov.ua", "emb_th@mfa.gov.ua"),
-    bali: consular("Embassy of Ukraine in Indonesia", "Посольство України в Iндонезiї", "Generali Tower, Gran Rubina Business Park, 16th floor, Rasuna Epicentrum, Jl. H. R. Rasuna Said, South Jakarta 12940, Indonesia", "+62212500801", "https://indonesia.mfa.gov.ua", "emb_id@mfa.gov.ua"),
-    singapore: consular("Embassy of Ukraine in Singapore", "Посольство України в Сингапурi", "#16-05 Singapore Land Tower, 50 Raffles Place, Singapore 048623", "+6565356550", "https://singapore.mfa.gov.ua/en", "emb_sg@mfa.gov.ua"),
-    tokyo: consular("Embassy of Ukraine in Japan", "Посольство України в Японiї", "3-5-31 Nishi-Azabu, Minato-ku, Tokyo 106-0031, Japan", "+81354749770", "https://japan.mfa.gov.ua", "emb_jp@mfa.gov.ua"),
-    seoul: consular("Embassy of Ukraine in the Republic of Korea", "Посольство України в Республiцi Корея", "21, Itaewon-ro 45-gil, Yongsan-gu, Seoul 04349, Republic of Korea", "+8227905696", "https://korea.mfa.gov.ua", "emb_kr@mfa.gov.ua"),
-    dubai: consular("Embassy of Ukraine in the UAE", "Посольство України в ОАЕ", "Jdeerah Street, Villa 13, P.O. Box 35572, Abu Dhabi, United Arab Emirates", "+97126327586", "https://uae.mfa.gov.ua", "emb_ae@mfa.gov.ua"),
-    istanbul: consular("Consulate General of Ukraine in Istanbul", "Генеральне консульство України в Стамбулi", "Adakale Sokak 13, Florya-Bakirkoy district, Istanbul, Turkey", "+902126622541", "https://istanbul.mfa.gov.ua", "gc_tr@mfa.gov.ua"),
-    cappadocia: consular("Embassy of Ukraine in Turkey", "Посольство України в Туреччинi", "Sancak Mahallesi, 512. Sokak No: 17, Cankaya, Ankara 06550, Turkey", "+903124405289", "https://turkey.mfa.gov.ua", "emb_tr@mfa.gov.ua"),
-    barcelona: consular("Consulate General of Ukraine in Barcelona", "Генеральне консульство України в Барселонi", "Carrer de Numancia 185, bajos 2, 08034 Barcelona, Spain", "+34934028956", "https://barcelona.mfa.gov.ua", "gc_esb@mfa.gov.ua"),
-    paris: consular("Embassy of Ukraine in France", "Посольство України у Францiї", "21 avenue de Saxe, 75007 Paris, France", "+33143060737", "https://france.mfa.gov.ua", "emb_fr@mfa.gov.ua"),
-    rome: consular("Consular Section of the Embassy of Ukraine in Italy", "Консульський вiддiл Посольства України в Iталiї", "Via Monte Pramaggiore 13, 00141 Rome, Italy", "+390682003641", "https://italy.mfa.gov.ua", "gc_it@mfa.gov.ua"),
-    lisbon: consular("Embassy of Ukraine in Portugal", "Посольство України в Португалiї", "Avenida das Descobertas 18, Restelo, 1400-092 Lisbon, Portugal", "+351213010043", "https://portugal.mfa.gov.ua", "emb_pt@mfa.gov.ua"),
-    london: consular("Consular Section of the Embassy of Ukraine in the UK", "Консульський вiддiл Посольства України у Великiй Британiї", "78 Kensington Park Road, London W11 2PL, United Kingdom", "+442072438923", "https://uk.mfa.gov.ua", "gc_gb@mfa.gov.ua"),
-    amsterdam: consular("Embassy of Ukraine in the Netherlands", "Посольство України в Нiдерландах", "Zeestraat 78, 2518 AD The Hague, Netherlands", "+31703626095", "https://netherlands.mfa.gov.ua", "emb_nl@mfa.gov.ua"),
-    prague: consular("Consular Section of the Embassy of Ukraine in Czechia", "Консульський вiддiл Посольства України в Чехiї", "Charlese de Gaulla 915/27, 160 00 Praha 6, Czech Republic", "+420227020212", "https://czechia.mfa.gov.ua", "emb_cz@mfa.gov.ua"),
-    vienna: consular("Embassy of Ukraine in Austria", "Посольство України в Австрiї", "Naaffgasse 23, 1180 Vienna, Austria", "+431479717211", "https://austria.mfa.gov.ua", "emb_at@mfa.gov.ua"),
-    zurich: consular("Embassy of Ukraine in Switzerland", "Посольство України у Швейцарiї", "Feldeggweg 5, 3005 Bern, Switzerland", "+41313522316", "https://switzerland.mfa.gov.ua", "emb_ch@mfa.gov.ua"),
-    athens: consular("Embassy of Ukraine in Greece", "Посольство України в Грецiї", "2 Stephanou Delta Str., 152 37 Filothei, Athens, Greece", "+302106800230", "https://greece.mfa.gov.ua", "emb_gr@mfa.gov.ua"),
-    marrakech: consular("Embassy of Ukraine in Morocco", "Посольство України в Марокко", "212 Rue Mouaouiya Ben Houdaig, O.L.M. Souissi, 10170 Rabat, Morocco", "+212537657840", "https://morocco.mfa.gov.ua", "emb_ma@mfa.gov.ua"),
-    cairo: consular("Embassy of Ukraine in Egypt", "Посольство України в Єгиптi", "Villa 50, Road 83, Maadi, Cairo, Egypt", "+20223786870", "https://egypt.mfa.gov.ua", "emb_eg@mfa.gov.ua"),
-    "cape-town": consular("Embassy of Ukraine in South Africa", "Посольство України в ПАР", "398 Marais Street, Brooklyn 0181, Pretoria, South Africa", "+27124601946", "https://rsa.mfa.gov.ua", "emb_za@mfa.gov.ua"),
-    "new-york": consular("Consulate General of Ukraine in New York", "Генеральне консульство України в Нью-Йорку", "240 East 49th Street, New York, NY 10017, United States", "+12123716965", "https://ny.mfa.gov.ua", "gc_usn@mfa.gov.ua"),
-    "mexico-city": consular("Embassy of Ukraine in Mexico", "Посольство України в Мексицi", "Paseo de la Reforma 730, Colonia Lomas de Chapultepec, Miguel Hidalgo, C.P. 11000, Mexico City, Mexico", "+525552824744", "https://mexico.mfa.gov.ua", "emb_mx@mfa.gov.ua"),
-    rio: consular("Embassy of Ukraine in Brazil", "Посольство України в Бразилiї", "SHIS QI 5, Conjunto 4, Casa 2, Lago Sul, Brasilia DF, CEP 71615-040, Brazil", "+556133651457", "https://brazil.mfa.gov.ua", "emb_br@mfa.gov.ua"),
-    "buenos-aires": consular("Embassy of Ukraine in Argentina", "Посольство України в Аргентинi", "Olleros 2169, Buenos Aires, Argentina", "+541147753476", "https://argentina.mfa.gov.ua", "emb_ar@mfa.gov.ua"),
-    sydney: consular("Embassy of Ukraine in Australia", "Посольство України в Австралiї", "Level 12, St George Centre, 60 Marcus Clarke Street, Canberra ACT 2601, Australia", "+61262305789", "https://australia.mfa.gov.ua", "emb_au@mfa.gov.ua"),
-    queenstown: consular("Honorary Consulate of Ukraine in Dunedin", "Почесне консульство України в Данiдiнi", "Regus, Level 1, Office 102, 218 George Street, Dunedin 9016, New Zealand", "+64274132412", "https://australia.mfa.gov.ua", "uaconsulsouth@gmail.com"),
-    reykjavik: consular("Embassy of Ukraine in Finland accredited to Iceland", "Посольство України у Фiнляндiї, акредитоване в Iсландiї", "Vahaniityntie 9, 00570 Helsinki, Finland", "+35892289000", "https://finland.mfa.gov.ua/en", "emb_fi@mfa.gov.ua"),
-    kyiv: consular("Ministry of Foreign Affairs of Ukraine", "Мiнiстерство закордонних справ України", "Mykhailivska Square 1, Kyiv 01018, Ukraine", "+380442381588", "https://mfa.gov.ua", "zsmfa@mfa.gov.ua")
-  };
-
-  function consular(enTitle, ukTitle, address, phone, url, email) {
-    return {
-      title: bi(enTitle, ukTitle),
-      note: bi("Official Ukrainian consular contact for this destination.", "Офiцiйний консульський контакт України для цього напрямку."),
-      address,
-      phone,
-      url,
-      email,
-      verified: true
-    };
-  }
-
   window.APP_DATA = {
     defaultState: {
       language: "en",
@@ -2227,7 +2375,6 @@
     dangerMeta,
     aidGuides,
     coreGuideIds,
-    ukrainianConsularSupport,
     destinations,
     popularPlaces
   };

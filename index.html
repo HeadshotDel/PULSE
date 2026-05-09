@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d0d0f">
-  <meta name="description" content="FieldAid: offline first aid, local hazards, emergency help, translation, and safe travel tools.">
+  <meta name="description" content="PULSE: offline first aid, local hazards, emergency help, translation, and safe travel tools.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icon.svg">
   <link rel="stylesheet" href="styles.css">
-  <title>FieldAid</title>
+  <title>PULSE</title>
 </head>
 <body>
   <div class="mobile-app">
     <header class="app-topbar">
       <div>
-        <p class="app-kicker">FieldAid</p>
-        <h1 data-i18n="appTitle">Travel First Aid</h1>
+        <p class="app-kicker">PULSE</p>
+        <h1 data-i18n="appTitle">PULSE</h1>
       </div>
       <div class="topbar-badges">
         <button class="top-badge" id="sync-badge" type="button">offline</button>
@@ -58,6 +58,13 @@
             <h3 data-i18n="countryRulesTitle">General Rules in This Country</h3>
           </div>
           <div class="rule-list" id="country-rules"></div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-headline">
+            <h3 data-i18n="recommendedVaccinationsTitle">Recommended Vaccinations</h3>
+          </div>
+          <div class="mini-list" id="recommended-vaccinations"></div>
         </section>
 
         <section class="content-section">
@@ -225,6 +232,10 @@
           </div>
           <form class="form-stack" id="medical-card-form">
             <label class="field">
+              <span data-i18n="medicalName">Name</span>
+              <input id="medical-name" name="medicalName" placeholder="Full name" type="text">
+            </label>
+            <label class="field">
               <span data-i18n="bloodType">Blood Type</span>
               <input id="medical-blood-type" name="bloodType" placeholder="O+, A-, unknown" type="text">
             </label>
@@ -243,6 +254,39 @@
             <button class="secondary-button" type="submit" data-i18n="saveMedicalCard">Save Medical Card</button>
           </form>
           <div class="medical-card-preview" id="medical-card-preview"></div>
+          <div class="action-row qr-action-row">
+            <button class="secondary-button" type="button" data-action="generate-medical-qr" data-i18n="generateMedicalQr">Generate Medical QR</button>
+          </div>
+          <div class="qr-output" id="medical-qr-output"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="myVaccinationsTitle">My Vaccinations</h3>
+          </div>
+          <form class="form-stack" id="my-vaccination-form">
+            <label class="field">
+              <span data-i18n="vaccineName">Vaccine name</span>
+              <input id="my-vaccine-name" name="vaccineName" placeholder="Hepatitis A" required type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="vaccineDate">Date / year</span>
+              <input id="my-vaccine-date" name="vaccineDate" placeholder="2025" required type="text">
+            </label>
+            <label class="field">
+              <span data-i18n="vaccineNote">Optional note</span>
+              <input id="my-vaccine-note" name="vaccineNote" placeholder="Booster due, certificate number..." type="text">
+            </label>
+            <button class="secondary-button" type="submit" data-i18n="saveVaccination">Save vaccination</button>
+          </form>
+          <div class="mini-list" id="my-vaccination-list"></div>
+        </section>
+
+        <section class="panel inline-panel">
+          <div class="section-headline">
+            <h3 data-i18n="localSimCardsTitle">Local SIM Cards</h3>
+          </div>
+          <div class="mini-list" id="local-sim-list"></div>
         </section>
 
         <section class="panel inline-panel">
@@ -317,23 +361,23 @@
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <button class="nav-tab is-active" data-tab-target="sos" type="button">
-        <span class="nav-icon nav-icon-sos" aria-hidden="true"></span>
+        <span class="nav-icon"></span>
         <span data-i18n="tabSos">SOS</span>
       </button>
       <button class="nav-tab" data-tab-target="hazards" type="button">
-        <span class="nav-icon nav-icon-hazards" aria-hidden="true"></span>
+        <span class="nav-icon"></span>
         <span data-i18n="tabHazards">Hazards</span>
       </button>
       <button class="nav-tab" data-tab-target="aid" type="button">
-        <span class="nav-icon nav-icon-aid" aria-hidden="true"></span>
+        <span class="nav-icon"></span>
         <span data-i18n="tabAid">First Aid</span>
       </button>
       <button class="nav-tab" data-tab-target="map" type="button">
-        <span class="nav-icon nav-icon-map" aria-hidden="true"></span>
+        <span class="nav-icon"></span>
         <span data-i18n="tabMap">Map</span>
       </button>
       <button class="nav-tab" data-tab-target="profile" type="button">
-        <span class="nav-icon nav-icon-profile" aria-hidden="true"></span>
+        <span class="nav-icon"></span>
         <span data-i18n="tabProfile">Profile</span>
       </button>
     </nav>
@@ -350,6 +394,7 @@
   <div class="toast" id="toast" aria-live="polite"></div>
 
   <script src="data.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
