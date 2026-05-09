@@ -62,6 +62,13 @@
 
         <section class="content-section">
           <div class="section-headline">
+            <h3 data-i18n="restrictedItemsTitle">Що може бути заборонено</h3>
+          </div>
+          <div class="mini-list" id="restricted-items"></div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-headline">
             <h3 data-i18n="recommendedVaccinationsTitle">Recommended Vaccinations</h3>
           </div>
           <div class="mini-list" id="recommended-vaccinations"></div>
@@ -361,23 +368,23 @@
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <button class="nav-tab is-active" data-tab-target="sos" type="button">
-        <span class="nav-icon"></span>
+        <span class="nav-icon" aria-hidden="true">🚨</span>
         <span data-i18n="tabSos">SOS</span>
       </button>
       <button class="nav-tab" data-tab-target="hazards" type="button">
-        <span class="nav-icon"></span>
+        <span class="nav-icon" aria-hidden="true">⚠️</span>
         <span data-i18n="tabHazards">Hazards</span>
       </button>
       <button class="nav-tab" data-tab-target="aid" type="button">
-        <span class="nav-icon"></span>
+        <span class="nav-icon" aria-hidden="true">✚</span>
         <span data-i18n="tabAid">First Aid</span>
       </button>
       <button class="nav-tab" data-tab-target="map" type="button">
-        <span class="nav-icon"></span>
+        <span class="nav-icon" aria-hidden="true">🗺️</span>
         <span data-i18n="tabMap">Map</span>
       </button>
       <button class="nav-tab" data-tab-target="profile" type="button">
-        <span class="nav-icon"></span>
+        <span class="nav-icon" aria-hidden="true">👤</span>
         <span data-i18n="tabProfile">Profile</span>
       </button>
     </nav>
@@ -394,7 +401,7 @@
   <div class="toast" id="toast" aria-live="polite"></div>
 
   <script src="data.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -147,6 +147,9 @@
       nearby: "nearby",
       recommendedVaccinationsTitle: "Recommended Vaccinations",
       noVaccinationData: "No specific vaccination data added for this destination yet. Check official travel health guidance before departure.",
+      restrictedItemsTitle: "What may be restricted",
+      restrictedFallback: "Restriction data for this destination has not been added yet. Before travel, check official import rules for medicines, CBD, vapes, and other controlled items.",
+      restrictedDisclaimer: "This is not legal advice. Check official sources before travel.",
       myVaccinationsTitle: "My Vaccinations",
       vaccineName: "Vaccine name",
       vaccineDate: "Date / year",
@@ -159,9 +162,12 @@
       generateMedicalQr: "Generate Medical QR",
       qrPrivacyWarning: "QR contains your medical information. Show only to trusted medical staff.",
       qrGenerated: "Medical QR generated.",
+      fillMedicalCardFirst: "Fill in the medical card first.",
+      qrLibraryMissing: "QR library did not load. Check your internet connection and try again.",
       medicalName: "Name",
       emergencyContact: "Emergency contact",
       mentalHealth: "Mental Health",
+      dontsTitle: "What not to do",
       warning: "Warning"
     },
     uk: {
@@ -298,6 +304,9 @@
       nearby: "поруч",
       recommendedVaccinationsTitle: "Рекомендованi щеплення",
       noVaccinationData: "Для цього напрямку ще немає окремих даних про щеплення. Перед виїздом перевiрте офiцiйнi travel health рекомендацiї.",
+      restrictedItemsTitle: "Що може бути заборонено",
+      restrictedFallback: "Дані про обмеження для цього напрямку ще не додані. Перед поїздкою перевірте офіційні правила ввезення ліків, CBD, вейпів та інших контрольованих товарів.",
+      restrictedDisclaimer: "Це не юридична консультація. Перевіряйте офіційні джерела перед поїздкою.",
       myVaccinationsTitle: "Мої щеплення",
       vaccineName: "Назва вакцини",
       vaccineDate: "Дата / рiк",
@@ -310,9 +319,12 @@
       generateMedicalQr: "Згенерувати медичний QR",
       qrPrivacyWarning: "QR мiстить вашу медичну iнформацiю. Показуйте його лише медичним працiвникам, яким довiряєте.",
       qrGenerated: "Медичний QR згенеровано.",
+      fillMedicalCardFirst: "Спочатку заповніть медичну картку.",
+      qrLibraryMissing: "QR-бібліотека не завантажилась. Перевірте інтернет і спробуйте ще раз.",
       medicalName: "Iм'я",
       emergencyContact: "Екстрений контакт",
       mentalHealth: "Психологiчна допомога",
+      dontsTitle: "Чого не робити",
       warning: "Попередження"
     }
   };
@@ -387,6 +399,7 @@
       symptoms: ["почервонiла або пухирчаста шкiра", "бiль", "набряк", "бiлi або обвугленi дiлянки", "ознаки шоку"],
       steps: ["Охолоджуйте проточною водою щонайменше 20 хвилин.", "Знiмiть каблучки, годинник i тiсний одяг, якщо вони не прилипли.", "Накрийте чистою неприлипною пов'язкою або харчовою плiвкою.", "Викликайте допомогу при опiках обличчя, дихальних шляхiв, хiмiчних, електричних або великих опiках."],
       avoid: ["не наносити масло чи жир", "не проколювати пухирi", "не зривати одяг, що прилип"],
+      donts: ["Не наносіть масло, жир, зубну пасту або креми.", "Не проколюйте пухирі.", "Не знімайте одяг, який прилип до опіку."],
       watchFor: ["проблеми з диханням", "велика зона пухирiв", "глибока бiла або чорна шкiра", "сплутанiсть або непритомнiсть"],
       causes: ["гарячi рiдини", "сонце", "вогонь", "хiмiкати", "електрика"],
       whatToDo: ["спочатку охолодити", "захистити вiд iнфекцiї", "контролювати шок", "звернутися по допомогу при тяжких опiках"],
@@ -398,6 +411,7 @@
       symptoms: ["бiль", "набряк", "синець", "деформацiя", "неможливо наступати"],
       steps: ["Зупинiть рух i пiдтримайте ушкоджену частину.", "Прикладіть холод через тканину.", "Пiднiмiть кiнцiвку, якщо це комфортно i безпечно.", "Звернiться по допомогу при деформацiї, онімiннi, вiдкритiй ранi або сильному болю."],
       avoid: ["не випрямляти кiнцiвку силою", "не масажувати ймовiрний перелом", "не дозволяти ходити при серйознiй травмi"],
+      donts: ["Не випрямляйте кінцівку силою.", "Не дозволяйте людині йти на болючій або деформованій кінцівці.", "Не масажуйте ушкоджену ділянку."],
       watchFor: ["онiмiння пальцiв", "синя або бліда шкiра", "зростання набряку", "сильний бiль"],
       causes: ["падiння", "ковзання", "ДТП", "травми на маршрутах", "спорт або воднi активностi"],
       whatToDo: ["пiдтримати", "охолодити", "пiдняти", "транспортувати обережно"],
@@ -409,6 +423,7 @@
       symptoms: ["беззвучний кашель", "не може говорити", "хапається за горло", "синi губи", "колапс"],
       steps: ["Запитайте, чи людина вдавилася, i викликайте екстрену допомогу.", "Дайте до 5 ударiв мiж лопатками, якщо кашель неефективний.", "Виконайте абдомiнальнi поштовхи, якщо ви навченi i це доречно.", "Почнiть СЛР, якщо людина втратила свiдомiсть."],
       avoid: ["не шукати предмет наослiп у ротi", "не давати воду", "не вiдкладати виклик допомоги"],
+      donts: ["Не шукайте предмет пальцями наосліп у роті.", "Не давайте воду, поки дихальні шляхи заблоковані.", "Не відкладайте виклик екстрених служб, якщо людина не може дихати."],
       watchFor: ["втрата свiдомостi", "слабкий кашель", "синi губи", "особливi технiки для немовлят або вагiтних"],
       causes: ["їжа", "дрiбнi предмети", "блювотнi маси", "погано пережована їжа", "аспiрацiя пiсля алкоголю"],
       whatToDo: ["заохочувати кашель, якщо вiн ефективний", "удари по спинi", "абдомiнальнi поштовхи", "СЛР при втратi свiдомостi"],
@@ -559,9 +574,9 @@
     }
   };
 
-  function quickAidGuide(id, danger, title, summary, symptoms, steps, avoid, watchFor, causes, whatToDo, overview) {
+  function quickAidGuide(id, danger, title, summary, symptoms, steps, avoid, watchFor, causes, whatToDo, overview, donts) {
     const uk = quickAidUk[id] || {};
-    return {
+    const guide = {
       id,
       danger,
       title: bi(title, uk.title || title),
@@ -576,6 +591,10 @@
       sourceUrl: "",
       videoUrl: ""
     };
+    if (donts || uk.donts) {
+      guide.donts = bi(donts || [], uk.donts || donts || []);
+    }
+    return guide;
   }
 
   const aidGuides = {
@@ -608,6 +627,10 @@
       avoid: bi(
         ["do not give alcohol", "do not leave the person alone", "do not force fluids into someone with altered consciousness"],
         ["не давайте алкоголь", "не залишайте людину саму", "не вливайте рiдину людинi з порушеною свiдомiстю"]
+      ),
+      donts: bi(
+        ["Do not give alcohol or energy drinks.", "Do not force fluids if the person is confused or unconscious.", "Do not leave the person in direct sun or heat."],
+        ["Не давайте алкоголь або енергетики.", "Не змушуйте пити, якщо людина сплутана або непритомна.", "Не залишайте людину під прямим сонцем або в спеці."]
       ),
       watchFor: bi(
         ["hot dry skin", "confusion", "fainting", "seizure"],
@@ -793,6 +816,10 @@
       avoid: bi(
         ["do not remove pressure unnecessarily", "do not delay emergency help"],
         ["не знiмайте тиск без потреби", "не зволiкайте з викликом допомоги"]
+      ),
+      donts: bi(
+        ["Do not remove soaked dressings; add more layers on top.", "Do not remove embedded objects from the wound.", "Do not loosen a tourniquet once applied unless medical professionals tell you."],
+        ["Не знімайте промоклі пов'язки; додавайте нові шари зверху.", "Не витягуйте предмети, що застрягли в рані.", "Не послаблюйте турнікет після накладання без вказівки медиків."]
       ),
       watchFor: bi(
         ["cold skin", "confusion", "fainting"],
@@ -997,7 +1024,8 @@
       ["breathing trouble", "large blistering area", "deep white or black skin", "confusion or fainting"],
       ["hot liquids", "sun exposure", "fire", "chemicals", "electricity"],
       ["cool first", "protect from infection", "treat shock", "get urgent care for severe burns"],
-      ["Burn severity depends on depth, size, location, and airway involvement.", "Children and older adults need earlier medical review.", "Chemical and electrical burns can be more serious than they first look."]
+      ["Burn severity depends on depth, size, location, and airway involvement.", "Children and older adults need earlier medical review.", "Chemical and electrical burns can be more serious than they first look."],
+      ["Do not apply butter, oils, toothpaste, or creams.", "Do not break blisters.", "Do not remove clothing that is stuck to the burn."]
     ),
     fractureSprain: quickAidGuide(
       "fractureSprain",
@@ -1010,7 +1038,8 @@
       ["numb fingers or toes", "blue or pale skin", "increasing swelling", "severe pain"],
       ["falls", "slips", "traffic incidents", "trail injuries", "sports or water activities"],
       ["support", "cool", "elevate", "transport safely"],
-      ["Sprains and fractures can look similar in the first hour.", "Immobilization prevents worsening tissue damage.", "Neurovascular symptoms are urgent."]
+      ["Sprains and fractures can look similar in the first hour.", "Immobilization prevents worsening tissue damage.", "Neurovascular symptoms are urgent."],
+      ["Do not force the limb straight.", "Do not let the person walk on a painful or deformed limb.", "Do not massage the injured area."]
     ),
     choking: quickAidGuide(
       "choking",
@@ -1023,7 +1052,8 @@
       ["loss of consciousness", "weak cough", "blue lips", "pregnancy or infant choking differences"],
       ["food", "small objects", "vomit", "poorly chewed meals", "alcohol-related aspiration"],
       ["encourage cough if effective", "back blows", "abdominal thrusts", "CPR if unresponsive"],
-      ["A strong cough means some air is moving.", "Silent choking is life-threatening.", "Infants and pregnant people need modified techniques."]
+      ["A strong cough means some air is moving.", "Silent choking is life-threatening.", "Infants and pregnant people need modified techniques."],
+      ["Do not do a blind finger sweep in the mouth.", "Do not give water while the airway is blocked.", "Do not delay calling emergency services if breathing is blocked."]
     ),
     cprUnresponsive: quickAidGuide(
       "cprUnresponsive",
@@ -1200,6 +1230,10 @@
       avoid: bi(
         ["do not stay in a crowd if it worsens symptoms", "do not ignore injury, fainting, or severe chest pain"],
         ["не залишайтеся в натовпi, якщо симптоми посилюються", "не iгноруйте травму, непритомнiсть або сильний бiль у грудях"]
+      ),
+      donts: bi(
+        ["Do not dismiss the person with phrases like just calm down.", "Do not leave the person alone if they are getting worse.", "Do not force them to stand up quickly or move into a crowd."],
+        ["Не знецінюйте стан людини фразами на кшталт «просто заспокойся».", "Не залишайте людину саму, якщо їй стає гірше.", "Не змушуйте її швидко вставати або йти в натовп."]
       ),
       watchFor: bi(
         ["Seek urgent medical help if chest pain, fainting, injury, or suicidal thoughts are present."],
@@ -1594,6 +1628,67 @@
     };
 
     return [...(byRegion[seed.system] || byRegion.universal), ...routine];
+  }
+
+  function makeRestrictedItems(seed) {
+    const common = [
+      {
+        title: bi("Some prescription medicines", "Деякі рецептурні ліки"),
+        note: bi(
+          "Check import rules and carry a prescription or doctor note in English.",
+          "Перевірте правила ввезення та візьміть рецепт або довідку лікаря англійською мовою."
+        )
+      },
+      {
+        title: bi("CBD / cannabis products", "CBD / канабіс-продукти"),
+        note: bi(
+          "May be restricted, prohibited, or require special permission.",
+          "Можуть бути заборонені або вимагати спеціального дозволу."
+        )
+      },
+      {
+        title: bi("Drones and radio equipment", "Дрони та радіообладнання"),
+        note: bi(
+          "Registration or local permission may be required near airports, borders, or sensitive areas.",
+          "Поруч з аеропортами, кордонами або чутливими зонами може знадобитися реєстрація чи місцевий дозвіл."
+        )
+      }
+    ];
+
+    const bySystem = {
+      th: [
+        {
+          title: bi("Electronic cigarettes / vapes", "Електронні сигарети / вейпи"),
+          note: bi("Import or use can be restricted. Check current official rules before travel.", "Ввезення або використання може бути обмежене. Перед поїздкою перевірте актуальні офіційні правила.")
+        }
+      ],
+      sg: [
+        {
+          title: bi("Chewing gum and vapes", "Жувальна гумка та вейпи"),
+          note: bi("Some everyday items may have strict import or use rules.", "Для деяких повсякденних речей можуть діяти суворі правила ввезення або використання.")
+        }
+      ],
+      ae: [
+        {
+          title: bi("Controlled medicines", "Контрольовані ліки"),
+          note: bi("Some medicines require prior approval and original prescriptions.", "Деякі ліки потребують попереднього дозволу та оригінальних рецептів.")
+        }
+      ],
+      jp: [
+        {
+          title: bi("Stimulant medicines", "Стимулюючі ліки"),
+          note: bi("Some cold, ADHD, or stimulant medicines can be controlled.", "Деякі ліки від застуди, ADHD або стимулюючі препарати можуть контролюватися.")
+        }
+      ],
+      ua: [
+        {
+          title: bi("Photos near military or critical infrastructure", "Фото біля військових або критичних об'єктів"),
+          note: bi("Photography and movement can be restricted during martial law or alerts.", "Під час воєнного стану або тривог фото та пересування можуть бути обмежені.")
+        }
+      ]
+    };
+
+    return [...(bySystem[seed.system] || []), ...common].slice(0, 4);
   }
 
   function makeSimCards(seed) {
@@ -2337,6 +2432,7 @@
       alerts: [...makeAlerts(seed), ...makeCommonAlerts(seed)].slice(0, 8),
       countryRules: makeCountryRules(seed),
       weatherProfile: makeWeatherProfile(seed),
+      restrictedItems: makeRestrictedItems(seed),
       vaccinations: makeVaccinations(seed),
       simCards: makeSimCards(seed),
       map: {

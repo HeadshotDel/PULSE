@@ -58,6 +58,7 @@
       gpsHelpSubtitle: document.querySelector("#gps-help-subtitle"),
       sosHelpPoints: document.querySelector("#sos-help-points"),
       countryRules: document.querySelector("#country-rules"),
+      restrictedItems: document.querySelector("#restricted-items"),
       recommendedVaccinations: document.querySelector("#recommended-vaccinations"),
       weatherPanel: document.querySelector("#weather-panel"),
       translatorInput: document.querySelector("#translator-input"),
@@ -264,6 +265,51 @@
     return language === "ua" ? "uk" : appData.copy[language] ? language : "en";
   }
 
+  function localizeVaccination(item) {
+    if (normalizeLanguage(state.language) !== "uk") {
+      return item;
+    }
+
+    const statusMap = {
+      Recommended: "Рекомендовано",
+      Routine: "Планове",
+      Consider: "Розглянути",
+      Seasonal: "Сезонне"
+    };
+    const nameMap = {
+      "Tick-borne Encephalitis": "Кліщовий енцефаліт",
+      Tetanus: "Правець",
+      "Measles / MMR": "Кір / КПК",
+      "Hepatitis A": "Гепатит A",
+      Typhoid: "Черевний тиф",
+      "Japanese Encephalitis": "Японський енцефаліт",
+      "Yellow Fever": "Жовта гарячка",
+      Influenza: "Грип",
+      Polio: "Поліомієліт"
+    };
+    const noteMap = {
+      "Make sure your routine vaccination is up to date.": "Переконайтеся, що планове щеплення актуальне.",
+      "Make sure routine vaccination is up to date.": "Переконайтеся, що планове щеплення актуальне.",
+      "Recommended to be up to date before international travel.": "Рекомендовано оновити перед міжнародною поїздкою.",
+      "Recommended for most travelers.": "Рекомендовано для більшості мандрівників.",
+      "Recommended for many travelers.": "Рекомендовано для багатьох мандрівників.",
+      "Recommended for many international travelers.": "Рекомендовано для багатьох міжнародних мандрівників.",
+      "Consider for street food, rural trips, or longer stays.": "Варто розглянути для вуличної їжі, сільських поїздок або тривалого перебування.",
+      "Consider for rural exposure or longer stays.": "Варто розглянути для сільських зон або тривалого перебування.",
+      "Check official guidance for itinerary-specific risk.": "Перевірте офіційні рекомендації для ризиків за вашим маршрутом.",
+      "Consider seasonal vaccination for crowded travel.": "Варто розглянути сезонне щеплення для поїздок у людні місця.",
+      "Consider seasonal vaccination during travel season.": "Варто розглянути сезонне щеплення під час туристичного сезону.",
+      "Consider for forest, hiking, or rural exposure in risk areas.": "Варто розглянути для лісових, гірських або сільських зон ризику."
+    };
+
+    return {
+      ...item,
+      status: statusMap[item.status] || item.status,
+      name: nameMap[item.name] || item.name,
+      note: noteMap[item.note] || item.note
+    };
+  }
+
   function getPreferredLanguage() {
     const browserLanguage = (navigator.language || navigator.userLanguage || "").toLowerCase();
     if (browserLanguage.startsWith("uk") || browserLanguage.startsWith("ua")) {
@@ -454,8 +500,25 @@
       .map((rule) => `<div class="rule-item">${escapeHtml(rule)}</div>`)
       .join("");
 
+    refs.restrictedItems.innerHTML = Array.isArray(destination.restrictedItems) && destination.restrictedItems.length
+      ? `
+          ${destination.restrictedItems
+            .map(
+              (item) => `
+                <article class="mini-item compact-row">
+                  <strong>${escapeHtml(pickText(item.title))}</strong>
+                  <small>${escapeHtml(pickText(item.note))}</small>
+                </article>
+              `
+            )
+            .join("")}
+          <p class="restricted-disclaimer">${escapeHtml(t("restrictedDisclaimer"))}</p>
+        `
+      : `<div class="empty-state">${escapeHtml(t("restrictedFallback"))}</div>`;
+
     refs.recommendedVaccinations.innerHTML = Array.isArray(destination.vaccinations) && destination.vaccinations.length
       ? destination.vaccinations
+          .map((item) => localizeVaccination(item))
           .map(
             (item) => `
               <article class="mini-item compact-row">
@@ -563,6 +626,7 @@
         const danger = appData.dangerMeta[guide.danger];
         const symptoms = pickArray(guide.symptoms);
         const steps = pickArray(guide.steps);
+        const donts = pickArray(guide.donts);
         const causes = pickArray(guide.causes).length ? pickArray(guide.causes) : pickArray(guide.watchFor);
         const whatToDo = pickArray(guide.whatToDo).length ? pickArray(guide.whatToDo) : steps.slice(0, 4);
         const overview = pickArray(guide.overview).length ? pickArray(guide.overview) : [pickText(guide.summary), ...pickArray(guide.avoid).slice(0, 2)];
@@ -607,6 +671,14 @@
                     .join("")}
                 </ol>
               </div>
+              ${donts.length ? `
+                <div class="aid-donts">
+                  <strong>${escapeHtml(t("dontsTitle"))}</strong>
+                  <ul>
+                    ${donts.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+                  </ul>
+                </div>
+              ` : ""}
               <div class="action-row">
                 <button class="link-button" type="button" data-action="open-external" data-url="${escapeHtml(youtubeSearchUrl(guide, destination))}">${escapeHtml(t("youtubeSearch"))}</button>
               </div>
@@ -880,13 +952,7 @@
 
   function handleSaveMedicalCard(event) {
     event.preventDefault();
-    state.medicalCard = {
-      name: refs.medicalName.value.trim(),
-      bloodType: refs.medicalBloodType.value.trim(),
-      allergies: refs.medicalAllergies.value.trim(),
-      chronicDiseases: refs.medicalDiseases.value.trim(),
-      medications: refs.medicalMedications.value.trim()
-    };
+    state.medicalCard = readMedicalCardForm();
 
     saveState();
     renderMedicalCardPreview();
@@ -1292,6 +1358,15 @@
   }
 
   function generateMedicalQr() {
+    state.medicalCard = readMedicalCardForm();
+    saveState();
+    renderMedicalCardPreview();
+
+    if (!hasMedicalCardData()) {
+      renderQrMessage(t("fillMedicalCardFirst"));
+      return;
+    }
+
     const qrText = buildMedicalQrText();
     refs.medicalQrOutput.innerHTML = `
       <article class="qr-card">
@@ -1301,8 +1376,8 @@
     `;
 
     const target = document.querySelector("#medical-qr-canvas");
-    if (!window.QRCode || !target) {
-      target.innerHTML = `<div class="empty-state">${escapeHtml(t("notSupported"))}</div>`;
+    if (!window.QRCode || typeof window.QRCode.toCanvas !== "function" || !target) {
+      renderQrMessage(t("qrLibraryMissing"));
       return;
     }
 
@@ -1315,8 +1390,33 @@
         dark: "#111116",
         light: "#ffffff"
       }
+    }, (error) => {
+      if (error) {
+        renderQrMessage(t("qrLibraryMissing"));
+        return;
+      }
+      toast(t("qrGenerated"));
     });
-    toast(t("qrGenerated"));
+  }
+
+  function renderQrMessage(message) {
+    refs.medicalQrOutput.innerHTML = `
+      <article class="qr-card is-error">
+        <div class="empty-state">${escapeHtml(message)}</div>
+      </article>
+    `;
+  }
+
+  function hasMedicalCardData() {
+    return [
+      state.medicalCard.name,
+      state.medicalCard.bloodType,
+      state.medicalCard.allergies,
+      state.medicalCard.chronicDiseases,
+      state.medicalCard.medications,
+      state.trustedContacts[0]?.name,
+      state.trustedContacts[0]?.channel
+    ].some((value) => String(value || "").trim().length > 0);
   }
 
   function buildMedicalQrText() {
@@ -1330,6 +1430,16 @@
       `${t("medications")}: ${state.medicalCard.medications || "-"}`,
       `${t("emergencyContact")}: ${emergencyContact ? `${emergencyContact.name} ${emergencyContact.channel}` : "-"}`
     ].join("\n");
+  }
+
+  function readMedicalCardForm() {
+    return {
+      name: refs.medicalName.value.trim(),
+      bloodType: refs.medicalBloodType.value.trim(),
+      allergies: refs.medicalAllergies.value.trim(),
+      chronicDiseases: refs.medicalDiseases.value.trim(),
+      medications: refs.medicalMedications.value.trim()
+    };
   }
 
   async function shareLocation() {
